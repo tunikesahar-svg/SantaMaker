@@ -3,218 +3,182 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Audio Hash Generator for 3D Printing</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<title>Audio Hash Generator</title>
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --bg: #0a0a0b;
-  --surface: #141416;
-  --surface2: #1c1c20;
-  --surface3: #252529;
-  --border: #2a2a30;
-  --border-hover: #3a3a44;
-  --text: #eeeef0;
-  --text-dim: #8a8a96;
-  --text-muted: #55555f;
+  --bg: #09090b;
+  --surface: #131316;
+  --surface2: #1a1a1f;
+  --surface3: #232329;
+  --border: #27272a;
+  --border-h: #3f3f46;
+  --txt: #fafafa;
+  --txt2: #a1a1aa;
+  --txt3: #52525b;
   --accent: #8b5cf6;
-  --accent-glow: rgba(139, 92, 246, 0.25);
-  --accent-soft: rgba(139, 92, 246, 0.1);
+  --accent-g: rgba(139,92,246,0.2);
   --green: #22c55e;
-  --green-glow: rgba(34, 197, 94, 0.3);
+  --green-g: rgba(34,197,94,0.25);
   --red: #ef4444;
-  --red-glow: rgba(239, 68, 68, 0.35);
-  --radius: 14px;
-  --radius-sm: 10px;
-  --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --red-g: rgba(239,68,68,0.3);
+  --r: 12px;
+  --t: 0.2s ease;
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: var(--bg);
-  color: var(--text);
+  color: var(--txt);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
 }
 
-/* ─── Ambient Glow ─── */
+/* Glow */
 body::before {
   content: '';
   position: fixed;
-  top: -40%; left: 50%;
+  top: -300px;
+  left: 50%;
   transform: translateX(-50%);
-  width: 800px; height: 800px;
-  background: radial-gradient(circle, rgba(139,92,246,0.07) 0%, transparent 70%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(139,92,246,0.08), transparent 70%);
   pointer-events: none;
-  z-index: 0;
 }
 
-/* ─── Header ─── */
+/* Header */
 .header {
   width: 100%;
-  max-width: 700px;
-  padding: 28px 24px 0;
+  max-width: 640px;
+  padding: 24px 20px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative;
-  z-index: 2;
 }
 
 .brand a {
-  color: var(--text-dim);
+  color: var(--txt2);
   text-decoration: none;
   font-size: 13px;
   font-weight: 500;
-  letter-spacing: 0.02em;
-  transition: color var(--transition);
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  transition: color var(--t);
 }
 .brand a:hover { color: var(--accent); }
-.brand a .by { color: var(--text-muted); }
 
-.lang-select {
+.lang-sel {
   background: var(--surface2);
   border: 1px solid var(--border);
-  color: var(--text-dim);
-  font-family: 'Inter', sans-serif;
+  color: var(--txt2);
   font-size: 13px;
-  font-weight: 500;
-  padding: 7px 12px;
+  padding: 6px 10px;
   border-radius: 8px;
   cursor: pointer;
-  transition: all var(--transition);
   outline: none;
-  -webkit-appearance: none;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238a8a96' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  padding-right: 30px;
 }
-.lang-select:hover { border-color: var(--border-hover); color: var(--text); }
-.lang-select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.lang-sel:focus { border-color: var(--accent); }
 
-/* ─── Main Container ─── */
-.container {
+/* Container */
+.wrap {
   width: 100%;
-  max-width: 700px;
-  padding: 24px;
-  position: relative;
-  z-index: 1;
+  max-width: 640px;
+  padding: 20px;
 }
 
-.title {
+.heading {
   text-align: center;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
-.title h1 {
-  font-size: 26px;
+.heading h1 {
+  font-size: 24px;
   font-weight: 700;
-  letter-spacing: -0.03em;
-  background: linear-gradient(135deg, var(--text) 0%, var(--text-dim) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.02em;
 }
-.title p {
-  color: var(--text-muted);
+.heading p {
+  color: var(--txt3);
   font-size: 14px;
   margin-top: 6px;
-  font-weight: 400;
 }
 
-/* ─── Tabs ─── */
+/* Tabs */
 .tabs {
   display: flex;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  border-radius: 10px;
   padding: 4px;
-  margin: 28px 0 24px;
-  position: relative;
+  margin: 24px 0 20px;
 }
 
 .tab-btn {
   flex: 1;
-  padding: 12px 16px;
-  font-family: 'Inter', sans-serif;
+  padding: 11px;
   font-size: 14px;
   font-weight: 600;
+  font-family: inherit;
   background: none;
   border: none;
-  color: var(--text-muted);
+  color: var(--txt3);
   cursor: pointer;
-  border-radius: 8px;
-  transition: all var(--transition);
-  position: relative;
-  z-index: 1;
+  border-radius: 7px;
+  transition: all var(--t);
 }
-.tab-btn:hover { color: var(--text-dim); }
+.tab-btn:hover { color: var(--txt2); }
 .tab-btn.active {
-  color: var(--text);
+  color: var(--txt);
   background: var(--surface3);
   box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
-/* ─── Panels ─── */
-.tab-panel {
-  display: none;
-  animation: fadeSlideIn 0.35s ease;
-}
-.tab-panel.active { display: block; }
+/* Panels */
+.panel { display: none; }
+.panel.active { display: block; animation: fadeIn 0.3s ease; }
 
-@keyframes fadeSlideIn {
-  from { opacity: 0; transform: translateY(8px); }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ─── Record Panel ─── */
-.record-area {
+/* Record */
+.rec-area {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 40px 0 24px;
+  padding: 36px 0 20px;
 }
 
-.rec-btn-wrap {
+.rec-wrap {
   position: relative;
-  width: 110px; height: 110px;
+  width: 100px;
+  height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Pulse rings */
-.rec-btn-wrap .ring {
+.ring {
   position: absolute;
   inset: 0;
   border-radius: 50%;
   border: 2px solid var(--red);
   opacity: 0;
-  transform: scale(1);
   pointer-events: none;
 }
-.rec-btn-wrap.recording .ring {
-  animation: pulseRing 2s ease-out infinite;
-}
-.rec-btn-wrap.recording .ring:nth-child(2) { animation-delay: 0.6s; }
-.rec-btn-wrap.recording .ring:nth-child(3) { animation-delay: 1.2s; }
+.rec-wrap.on .ring { animation: pulse 2s ease-out infinite; }
+.rec-wrap.on .ring:nth-child(2) { animation-delay: 0.5s; }
+.rec-wrap.on .ring:nth-child(3) { animation-delay: 1s; }
 
-@keyframes pulseRing {
+@keyframes pulse {
   0% { opacity: 0.5; transform: scale(1); }
-  100% { opacity: 0; transform: scale(1.7); }
+  100% { opacity: 0; transform: scale(1.8); }
 }
 
 .rec-btn {
-  width: 88px; height: 88px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   border: none;
   background: linear-gradient(135deg, #ef4444, #dc2626);
@@ -222,749 +186,735 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--transition);
-  box-shadow: 0 4px 24px var(--red-glow);
+  transition: all var(--t);
+  box-shadow: 0 4px 20px var(--red-g);
   position: relative;
   z-index: 2;
 }
-.rec-btn:hover { transform: scale(1.06); box-shadow: 0 6px 32px var(--red-glow); }
-.rec-btn:active { transform: scale(0.97); }
+.rec-btn:hover { transform: scale(1.05); }
+.rec-btn:active { transform: scale(0.96); }
 
-.rec-btn .icon {
-  width: 28px; height: 28px;
-  background: white;
+.rec-icon {
+  width: 24px;
+  height: 24px;
+  background: #fff;
   border-radius: 50%;
-  transition: all var(--transition);
+  transition: all var(--t);
 }
-.rec-btn.recording .icon {
-  border-radius: 5px;
-  width: 24px; height: 24px;
+.rec-btn.on .rec-icon {
+  border-radius: 4px;
+  width: 22px;
+  height: 22px;
 }
 
 .timer {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 28px;
-  font-weight: 600;
-  color: var(--text-dim);
-  margin-top: 20px;
+  font-family: 'Courier New', monospace;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--txt2);
+  margin-top: 16px;
   letter-spacing: 0.05em;
-  transition: color var(--transition);
+  transition: color var(--t);
 }
-.timer.active { color: var(--red); }
+.timer.on { color: var(--red); }
 
 .rec-hint {
-  color: var(--text-muted);
+  color: var(--txt3);
   font-size: 13px;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 /* Visualizer */
-.visualizer {
+.viz {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  gap: 3px;
-  height: 50px;
-  margin-top: 20px;
+  gap: 2px;
+  height: 44px;
+  margin-top: 16px;
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.3s;
 }
-.visualizer.active { opacity: 1; }
-.visualizer .bar {
-  width: 4px;
+.viz.on { opacity: 1; }
+.viz-bar {
+  width: 3px;
+  min-height: 2px;
   background: var(--red);
   border-radius: 2px;
-  min-height: 3px;
-  transition: height 0.07s ease;
+  transition: height 0.06s linear;
 }
 
-/* ─── Upload Panel ─── */
-.drop-zone {
+/* Upload */
+.dropzone {
   border: 2px dashed var(--border);
-  border-radius: var(--radius);
-  padding: 50px 24px;
+  border-radius: var(--r);
+  padding: 44px 20px;
   text-align: center;
   cursor: pointer;
-  transition: all var(--transition);
+  transition: all var(--t);
   background: var(--surface);
   position: relative;
 }
-.drop-zone:hover, .drop-zone.dragover {
+.dropzone:hover, .dropzone.over {
   border-color: var(--accent);
-  background: var(--accent-soft);
-  box-shadow: 0 0 30px var(--accent-glow);
+  background: rgba(139,92,246,0.05);
 }
-.drop-zone .drop-icon {
-  font-size: 42px;
-  margin-bottom: 14px;
-  display: block;
-}
-.drop-zone .drop-text {
-  color: var(--text-dim);
-  font-size: 15px;
-  font-weight: 500;
-}
-.drop-zone .drop-sub {
-  color: var(--text-muted);
-  font-size: 12px;
-  margin-top: 8px;
-}
-.drop-zone input[type="file"] {
+.drop-icon { font-size: 38px; margin-bottom: 12px; display: block; }
+.drop-txt { color: var(--txt2); font-size: 14px; font-weight: 500; }
+.drop-sub { color: var(--txt3); font-size: 12px; margin-top: 6px; }
+.dropzone input {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   opacity: 0;
   cursor: pointer;
 }
 
-/* ─── Audio Player ─── */
-.player-section {
-  margin-top: 24px;
+/* Player */
+.player-box {
+  margin-top: 20px;
   display: none;
-  animation: fadeSlideIn 0.35s ease;
 }
-.player-section.visible { display: block; }
-
-.player-label {
-  font-size: 12px;
+.player-box.show { display: block; animation: fadeIn 0.3s ease; }
+.player-lbl {
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--text-muted);
-  margin-bottom: 10px;
+  color: var(--txt3);
+  margin-bottom: 8px;
 }
-
 audio {
   width: 100%;
-  height: 48px;
+  height: 44px;
   border-radius: 8px;
-  outline: none;
-  filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9);
 }
 
-/* ─── Result Section ─── */
-.result-section {
-  margin-top: 28px;
+/* Processing */
+.proc {
   display: none;
-  animation: fadeSlideIn 0.4s ease;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px;
+  gap: 12px;
 }
-.result-section.visible { display: block; }
+.proc.show { display: flex; }
+.spin {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.proc-txt { color: var(--txt2); font-size: 14px; }
 
-.result-label {
-  font-size: 12px;
+/* Result */
+.result {
+  margin-top: 24px;
+  display: none;
+}
+.result.show { display: block; animation: fadeIn 0.3s ease; }
+.res-lbl {
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--text-muted);
-  margin-bottom: 10px;
+  color: var(--txt3);
+  margin-bottom: 8px;
 }
 
-.hash-container {
-  background: #0d0d0f;
+.hash-box {
+  background: #0c0c0e;
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 20px;
+  border-radius: 10px;
+  padding: 18px;
   position: relative;
   overflow: hidden;
 }
-.hash-container::before {
+.hash-box::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--accent), transparent);
-  opacity: 0.5;
+  opacity: 0.4;
 }
 
-.hash-string {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 14px;
-  line-height: 1.7;
+.hash-text {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.8;
   color: var(--green);
   word-break: break-all;
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
-  -ms-user-select: none;
   pointer-events: none;
 }
 
-.hash-meta {
+.hash-info {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 10px;
-  padding-top: 10px;
+  justify-content: flex-end;
+  margin-top: 8px;
+  padding-top: 8px;
   border-top: 1px solid var(--border);
 }
-.hash-length {
-  font-family: 'JetBrains Mono', monospace;
+.hash-len {
+  font-family: 'Courier New', monospace;
   font-size: 11px;
-  color: var(--text-muted);
+  color: var(--txt3);
 }
 
-.warning-text {
-  color: var(--text-dim);
+.warn {
+  color: var(--txt2);
   font-size: 13px;
-  line-height: 1.6;
-  margin-top: 14px;
-  padding: 12px 16px;
-  background: rgba(139, 92, 246, 0.06);
-  border: 1px solid rgba(139, 92, 246, 0.12);
-  border-radius: var(--radius-sm);
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-}
-.warning-text .warn-icon {
-  font-size: 16px;
-  flex-shrink: 0;
-  margin-top: 1px;
+  line-height: 1.5;
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: rgba(139,92,246,0.06);
+  border: 1px solid rgba(139,92,246,0.1);
+  border-radius: 10px;
 }
 
 .copy-btn {
   width: 100%;
-  margin-top: 16px;
-  padding: 16px 24px;
-  font-family: 'Inter', sans-serif;
+  margin-top: 14px;
+  padding: 15px 20px;
+  font-family: inherit;
   font-size: 15px;
   font-weight: 600;
   border: none;
-  border-radius: var(--radius-sm);
+  border-radius: 10px;
   cursor: pointer;
   background: linear-gradient(135deg, var(--accent), #7c3aed);
-  color: white;
-  transition: all var(--transition);
-  box-shadow: 0 4px 20px var(--accent-glow);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  letter-spacing: 0.01em;
+  color: #fff;
+  transition: all var(--t);
+  box-shadow: 0 4px 16px var(--accent-g);
 }
-.copy-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(139,92,246,0.35); }
+.copy-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(139,92,246,0.3); }
 .copy-btn:active { transform: translateY(0); }
-.copy-btn.copied {
+.copy-btn.ok {
   background: linear-gradient(135deg, var(--green), #16a34a);
-  box-shadow: 0 4px 20px var(--green-glow);
+  box-shadow: 0 4px 16px var(--green-g);
 }
 
-.copy-btn svg {
-  width: 18px; height: 18px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-/* ─── Footer ─── */
+/* Footer */
 .footer {
-  margin-top: 40px;
-  padding-bottom: 32px;
+  margin-top: 32px;
+  padding-bottom: 24px;
   text-align: center;
-  color: var(--text-muted);
+  color: var(--txt3);
   font-size: 12px;
 }
 
-/* ─── Processing Overlay ─── */
-.processing {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 32px;
-  gap: 16px;
-}
-.processing.visible { display: flex; }
-
-.spinner {
-  width: 36px; height: 36px;
-  border: 3px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.processing-text {
-  color: var(--text-dim);
-  font-size: 14px;
-  font-weight: 500;
-}
-
-/* ─── Responsive ─── */
-@media (max-width: 520px) {
-  .container { padding: 16px; }
-  .title h1 { font-size: 21px; }
-  .hash-string { font-size: 12px; }
-  .rec-btn { width: 76px; height: 76px; }
-  .rec-btn-wrap { width: 96px; height: 96px; }
-  .header { padding: 20px 16px 0; }
+@media (max-width: 500px) {
+  .wrap { padding: 14px; }
+  .heading h1 { font-size: 20px; }
+  .hash-text { font-size: 11px; }
+  .rec-btn { width: 68px; height: 68px; }
+  .rec-wrap { width: 86px; height: 86px; }
 }
 </style>
 </head>
 <body>
 
-<!-- Header -->
 <div class="header">
   <div class="brand">
-    <a href="https://makerworld.com/ru/@SantaClaus" target="_blank" rel="noopener noreferrer">
-      <span class="by">Created by</span> SantaClaus ↗
-    </a>
+    <a href="https://makerworld.com/ru/@SantaClaus" target="_blank" rel="noopener">Created by SantaClaus</a>
   </div>
-  <select class="lang-select" id="langSelect">
-    <option value="en">🇬🇧 English</option>
-    <option value="ru">🇷🇺 Русский</option>
-    <option value="es">🇪🇸 Español</option>
-    <option value="de">🇩🇪 Deutsch</option>
+  <select class="lang-sel" id="langSel">
+    <option value="en">English</option>
+    <option value="ru">Русский</option>
+    <option value="es">Español</option>
+    <option value="de">Deutsch</option>
   </select>
 </div>
 
-<!-- Main Container -->
-<div class="container">
-
-  <div class="title">
-    <h1 data-i18n="title">Audio → Hash Generator</h1>
-    <p data-i18n="subtitle">Convert sound into a 100-character hash for 3D printing</p>
+<div class="wrap">
+  <div class="heading">
+    <h1 id="t_title">Audio Hash Generator</h1>
+    <p id="t_subtitle">Convert sound into a 100-character hash for 3D printing</p>
   </div>
 
-  <!-- Tabs -->
   <div class="tabs">
-    <button class="tab-btn active" data-tab="record">
-      <span data-i18n="tabRecord">🎙️ Record</span>
+    <button class="tab-btn active" id="tabRec" onclick="switchTab('record')">
+      <span id="t_tabRec">🎙️ Record</span>
     </button>
-    <button class="tab-btn" data-tab="upload">
-      <span data-i18n="tabUpload">📁 Upload</span>
+    <button class="tab-btn" id="tabUp" onclick="switchTab('upload')">
+      <span id="t_tabUp">📁 Upload</span>
     </button>
   </div>
 
   <!-- Record Panel -->
-  <div class="tab-panel active" id="panel-record">
-    <div class="record-area">
-      <div class="rec-btn-wrap" id="recBtnWrap">
+  <div class="panel active" id="panelRecord">
+    <div class="rec-area">
+      <div class="rec-wrap" id="recWrap">
         <div class="ring"></div>
         <div class="ring"></div>
         <div class="ring"></div>
-        <button class="rec-btn" id="recBtn" aria-label="Record">
-          <div class="icon"></div>
+        <button class="rec-btn" id="recBtn" onclick="toggleRecord()">
+          <div class="rec-icon"></div>
         </button>
       </div>
-      <div class="timer" id="timer">00:00</div>
-      <div class="rec-hint" data-i18n="recHint">Tap to start recording</div>
-      <div class="visualizer" id="visualizer"></div>
+      <div class="timer" id="timerEl">00:00</div>
+      <div class="rec-hint" id="t_recHint">Tap to start recording</div>
+      <div class="viz" id="viz"></div>
     </div>
   </div>
 
   <!-- Upload Panel -->
-  <div class="tab-panel" id="panel-upload">
-    <div class="drop-zone" id="dropZone">
+  <div class="panel" id="panelUpload">
+    <div class="dropzone" id="dropzone">
       <span class="drop-icon">📂</span>
-      <div class="drop-text" data-i18n="dropText">Drop audio file here or click to browse</div>
-      <div class="drop-sub" data-i18n="dropSub">MP3, WAV, M4A, WEBM</div>
-      <input type="file" id="fileInput" accept=".mp3,.wav,.m4a,.webm,audio/*">
+      <div class="drop-txt" id="t_dropTxt">Drop audio file here or click to browse</div>
+      <div class="drop-sub" id="t_dropSub">MP3, WAV, M4A, WEBM</div>
+      <input type="file" id="fileIn" accept=".mp3,.wav,.m4a,.webm,audio/*">
     </div>
   </div>
 
   <!-- Processing -->
-  <div class="processing" id="processing">
-    <div class="spinner"></div>
-    <div class="processing-text" data-i18n="processing">Generating hash…</div>
+  <div class="proc" id="proc">
+    <div class="spin"></div>
+    <div class="proc-txt" id="t_proc">Generating hash...</div>
   </div>
 
-  <!-- Audio Player -->
-  <div class="player-section" id="playerSection">
-    <div class="player-label" data-i18n="preview">Preview</div>
-    <audio id="audioPlayer" controls></audio>
+  <!-- Player -->
+  <div class="player-box" id="playerBox">
+    <div class="player-lbl" id="t_preview">Preview</div>
+    <audio id="player" controls preload="auto"></audio>
   </div>
 
   <!-- Result -->
-  <div class="result-section" id="resultSection">
-    <div class="result-label" data-i18n="resultLabel">Generated Hash String</div>
-    <div class="hash-container">
-      <div class="hash-string" id="hashOutput"></div>
-      <div class="hash-meta">
-        <span class="hash-length" id="hashLength">0 chars</span>
+  <div class="result" id="resultBox">
+    <div class="res-lbl" id="t_resLbl">Generated Hash String</div>
+    <div class="hash-box">
+      <div class="hash-text" id="hashOut"></div>
+      <div class="hash-info">
+        <span class="hash-len" id="hashLen">0 chars</span>
       </div>
     </div>
-    <div class="warning-text">
-      <span class="warn-icon">⚠️</span>
-      <span data-i18n="warning">Do not try to highlight the text. Please use the Copy button below to ensure you capture the invisible silence blocks!</span>
-    </div>
-    <button class="copy-btn" id="copyBtn">
-      <svg id="copyIcon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-      <span data-i18n="copyBtn">Copy Hash for MakerWorld</span>
+    <div class="warn" id="t_warn">⚠️ Do not try to highlight the text. Please use the Copy button below to ensure you capture the invisible silence blocks!</div>
+    <button class="copy-btn" id="copyBtn" onclick="copyHash()">
+      <span id="t_copyBtn">📋 Copy Hash for MakerWorld</span>
     </button>
   </div>
-
 </div>
 
 <div class="footer">
-  <span data-i18n="footer">100% client-side · No data is sent anywhere</span>
+  <span id="t_footer">100% client-side - No data is sent anywhere</span>
 </div>
 
 <script>
-// ══════════════════════════════════════════
-// Internationalization
-// ══════════════════════════════════════════
-const i18n = {
+/* ═══════════════════════════════════════ */
+/*  TRANSLATIONS                          */
+/* ═══════════════════════════════════════ */
+var LANG = {
   en: {
-    title: "Audio → Hash Generator",
+    title: "Audio Hash Generator",
     subtitle: "Convert sound into a 100-character hash for 3D printing",
-    tabRecord: "🎙️ Record",
-    tabUpload: "📁 Upload",
+    tabRec: "🎙️ Record",
+    tabUp: "📁 Upload",
     recHint: "Tap to start recording",
     recHintStop: "Tap to stop recording",
-    dropText: "Drop audio file here or click to browse",
+    dropTxt: "Drop audio file here or click to browse",
     dropSub: "MP3, WAV, M4A, WEBM",
     preview: "Preview",
-    processing: "Generating hash…",
-    resultLabel: "Generated Hash String",
-    warning: "Do not try to highlight the text. Please use the Copy button below to ensure you capture the invisible silence blocks!",
-    copyBtn: "Copy Hash for MakerWorld",
-    copied: "Copied!",
-    footer: "100% client-side · No data is sent anywhere",
-    micDenied: "Microphone access was denied. Please allow microphone permissions in your browser settings.",
-    micError: "Could not access microphone. Please check your device.",
-    chars: "chars"
+    proc: "Generating hash...",
+    resLbl: "Generated Hash String",
+    warn: "⚠️ Do not try to highlight the text. Please use the Copy button below to ensure you capture the invisible silence blocks!",
+    copyBtn: "📋 Copy Hash for MakerWorld",
+    copied: "✅ Copied!",
+    footer: "100% client-side - No data is sent anywhere",
+    micDenied: "Microphone access denied. Please allow it in browser settings.",
+    micError: "Could not access microphone.",
+    chars: "chars",
+    errDecode: "Error decoding audio. Try a different file."
   },
   ru: {
-    title: "Аудио → Хеш-генератор",
+    title: "Аудио Хеш-Генератор",
     subtitle: "Конвертируйте звук в 100-символьный хеш для 3D-печати",
-    tabRecord: "🎙️ Запись",
-    tabUpload: "📁 Загрузить",
+    tabRec: "🎙️ Запись",
+    tabUp: "📁 Загрузить",
     recHint: "Нажмите, чтобы начать запись",
-    recHintStop: "Нажмите, чтобы остановить запись",
-    dropText: "Перетащите аудиофайл сюда или нажмите для выбора",
+    recHintStop: "Нажмите, чтобы остановить",
+    dropTxt: "Перетащите аудиофайл или нажмите для выбора",
     dropSub: "MP3, WAV, M4A, WEBM",
     preview: "Предпрослушивание",
-    processing: "Генерация хеша…",
-    resultLabel: "Сгенерированная хеш-строка",
-    warning: "Не пытайтесь выделить текст вручную. Используйте кнопку «Копировать» ниже, чтобы гарантированно скопировать невидимые блоки тишины!",
-    copyBtn: "Копировать хеш для MakerWorld",
-    copied: "Скопировано!",
-    footer: "100% на стороне клиента · Данные никуда не отправляются",
-    micDenied: "Доступ к микрофону запрещён. Разрешите использование микрофона в настройках браузера.",
-    micError: "Не удалось получить доступ к микрофону. Проверьте ваше устройство.",
-    chars: "символов"
+    proc: "Генерация хеша...",
+    resLbl: "Сгенерированная хеш-строка",
+    warn: "⚠️ Не пытайтесь выделить текст вручную. Используйте кнопку Копировать ниже, чтобы скопировать невидимые блоки тишины!",
+    copyBtn: "📋 Копировать хеш для MakerWorld",
+    copied: "✅ Скопировано!",
+    footer: "100% на стороне клиента - Данные никуда не отправляются",
+    micDenied: "Доступ к микрофону запрещён. Разрешите в настройках браузера.",
+    micError: "Не удалось получить доступ к микрофону.",
+    chars: "символов",
+    errDecode: "Ошибка декодирования. Попробуйте другой файл."
   },
   es: {
-    title: "Audio → Generador de Hash",
-    subtitle: "Convierte sonido en un hash de 100 caracteres para impresión 3D",
-    tabRecord: "🎙️ Grabar",
-    tabUpload: "📁 Subir",
+    title: "Generador de Hash de Audio",
+    subtitle: "Convierte sonido en un hash de 100 caracteres para impresion 3D",
+    tabRec: "🎙️ Grabar",
+    tabUp: "📁 Subir",
     recHint: "Toca para comenzar a grabar",
-    recHintStop: "Toca para detener la grabación",
-    dropText: "Arrastra un archivo de audio aquí o haz clic para buscar",
+    recHintStop: "Toca para detener",
+    dropTxt: "Arrastra un archivo de audio o haz clic para buscar",
     dropSub: "MP3, WAV, M4A, WEBM",
     preview: "Vista previa",
-    processing: "Generando hash…",
-    resultLabel: "Cadena hash generada",
-    warning: "¡No intentes resaltar el texto! Usa el botón Copiar a continuación para asegurarte de capturar los bloques de silencio invisibles.",
-    copyBtn: "Copiar Hash para MakerWorld",
-    copied: "¡Copiado!",
-    footer: "100% en el cliente · No se envían datos a ningún lugar",
-    micDenied: "Se denegó el acceso al micrófono. Permite los permisos de micrófono en la configuración del navegador.",
-    micError: "No se pudo acceder al micrófono. Verifica tu dispositivo.",
-    chars: "caracteres"
+    proc: "Generando hash...",
+    resLbl: "Cadena hash generada",
+    warn: "⚠️ No intentes resaltar el texto. Usa el boton Copiar para capturar los bloques de silencio invisibles.",
+    copyBtn: "📋 Copiar Hash para MakerWorld",
+    copied: "✅ Copiado!",
+    footer: "100% en el cliente - No se envian datos",
+    micDenied: "Acceso al microfono denegado. Permite los permisos en la configuracion.",
+    micError: "No se pudo acceder al microfono.",
+    chars: "caracteres",
+    errDecode: "Error al decodificar. Prueba otro archivo."
   },
   de: {
-    title: "Audio → Hash-Generator",
-    subtitle: "Wandle Ton in einen 100-Zeichen-Hash für 3D-Druck um",
-    tabRecord: "🎙️ Aufnehmen",
-    tabUpload: "📁 Hochladen",
+    title: "Audio-Hash-Generator",
+    subtitle: "Wandle Ton in einen 100-Zeichen-Hash fuer 3D-Druck um",
+    tabRec: "🎙️ Aufnehmen",
+    tabUp: "📁 Hochladen",
     recHint: "Tippen zum Aufnehmen",
     recHintStop: "Tippen zum Stoppen",
-    dropText: "Audiodatei hierher ziehen oder klicken zum Durchsuchen",
+    dropTxt: "Audiodatei hierher ziehen oder klicken",
     dropSub: "MP3, WAV, M4A, WEBM",
     preview: "Vorschau",
-    processing: "Hash wird generiert…",
-    resultLabel: "Generierter Hash-String",
-    warning: "Versuchen Sie nicht, den Text zu markieren. Bitte verwenden Sie die Schaltfläche „Kopieren" unten, um die unsichtbaren Stille-Blöcke sicher zu erfassen!",
-    copyBtn: "Hash für MakerWorld kopieren",
-    copied: "Kopiert!",
-    footer: "100% clientseitig · Es werden keine Daten gesendet",
-    micDenied: "Der Zugriff auf das Mikrofon wurde verweigert. Bitte erlauben Sie die Mikrofonberechtigung in Ihren Browsereinstellungen.",
-    micError: "Zugriff auf das Mikrofon nicht möglich. Bitte überprüfen Sie Ihr Gerät.",
-    chars: "Zeichen"
+    proc: "Hash wird generiert...",
+    resLbl: "Generierter Hash-String",
+    warn: "⚠️ Versuchen Sie nicht, den Text zu markieren. Verwenden Sie die Kopieren-Taste, um die unsichtbaren Stille-Bloecke zu erfassen!",
+    copyBtn: "📋 Hash fuer MakerWorld kopieren",
+    copied: "✅ Kopiert!",
+    footer: "100% clientseitig - Es werden keine Daten gesendet",
+    micDenied: "Mikrofonzugriff verweigert. Erlauben Sie es in den Browsereinstellungen.",
+    micError: "Zugriff auf das Mikrofon nicht moeglich.",
+    chars: "Zeichen",
+    errDecode: "Fehler beim Decodieren. Versuchen Sie eine andere Datei."
   }
 };
 
-let currentLang = 'en';
+var curLang = "en";
 
-function setLang(lang) {
-  currentLang = lang;
-  const strings = i18n[lang];
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (strings[key]) el.textContent = strings[key];
-  });
-  // Update dynamic elements
-  const hl = document.getElementById('hashLength');
-  if (hl) {
-    const count = (document.getElementById('hashOutput').textContent || '').length;
-    if (count > 0) hl.textContent = count + ' ' + strings.chars;
+function T(key) {
+  return LANG[curLang][key] || LANG.en[key] || key;
+}
+
+function applyLang() {
+  document.getElementById("t_title").textContent = T("title");
+  document.getElementById("t_subtitle").textContent = T("subtitle");
+  document.getElementById("t_tabRec").textContent = T("tabRec");
+  document.getElementById("t_tabUp").textContent = T("tabUp");
+  document.getElementById("t_recHint").textContent = isRecording ? T("recHintStop") : T("recHint");
+  document.getElementById("t_dropTxt").textContent = T("dropTxt");
+  document.getElementById("t_dropSub").textContent = T("dropSub");
+  document.getElementById("t_preview").textContent = T("preview");
+  document.getElementById("t_proc").textContent = T("proc");
+  document.getElementById("t_resLbl").textContent = T("resLbl");
+  document.getElementById("t_warn").textContent = T("warn");
+  document.getElementById("t_copyBtn").textContent = T("copyBtn");
+  document.getElementById("t_footer").textContent = T("footer");
+
+  var h = document.getElementById("hashOut").textContent;
+  if (h && h.length > 0) {
+    document.getElementById("hashLen").textContent = h.length + " " + T("chars");
   }
 }
 
-document.getElementById('langSelect').addEventListener('change', e => setLang(e.target.value));
-
-// ══════════════════════════════════════════
-// Tab Switching
-// ══════════════════════════════════════════
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
-  });
+document.getElementById("langSel").addEventListener("change", function(e) {
+  curLang = e.target.value;
+  applyLang();
 });
 
-// ══════════════════════════════════════════
-// Visualizer Bars Setup
-// ══════════════════════════════════════════
-const visualizerEl = document.getElementById('visualizer');
-const BAR_COUNT = 40;
-for (let i = 0; i < BAR_COUNT; i++) {
-  const bar = document.createElement('div');
-  bar.classList.add('bar');
-  bar.style.height = '3px';
-  visualizerEl.appendChild(bar);
-}
+/* ═══════════════════════════════════════ */
+/*  TAB SWITCHING                         */
+/* ═══════════════════════════════════════ */
+function switchTab(tab) {
+  var tabRec = document.getElementById("tabRec");
+  var tabUp = document.getElementById("tabUp");
+  var panelRec = document.getElementById("panelRecord");
+  var panelUp = document.getElementById("panelUpload");
 
-// ══════════════════════════════════════════
-// Recording Logic
-// ══════════════════════════════════════════
-let mediaRecorder = null;
-let recordedChunks = [];
-let isRecording = false;
-let timerInterval = null;
-let seconds = 0;
-let recStream = null;
-let recAudioCtx = null;
-let recAnalyser = null;
-let recAnimFrame = null;
-
-const recBtn = document.getElementById('recBtn');
-const recBtnWrap = document.getElementById('recBtnWrap');
-const timerEl = document.getElementById('timer');
-const audioPlayer = document.getElementById('audioPlayer');
-const playerSection = document.getElementById('playerSection');
-const resultSection = document.getElementById('resultSection');
-const hashOutput = document.getElementById('hashOutput');
-const hashLength = document.getElementById('hashLength');
-const processingEl = document.getElementById('processing');
-
-recBtn.addEventListener('click', async () => {
-  if (!isRecording) {
-    await startRecording();
+  if (tab === "record") {
+    tabRec.classList.add("active");
+    tabUp.classList.remove("active");
+    panelRec.classList.add("active");
+    panelUp.classList.remove("active");
   } else {
-    stopRecording();
+    tabUp.classList.add("active");
+    tabRec.classList.remove("active");
+    panelUp.classList.add("active");
+    panelRec.classList.remove("active");
   }
-});
-
-async function startRecording() {
-  try {
-    recStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-  } catch (err) {
-    const str = i18n[currentLang];
-    if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-      alert(str.micDenied);
-    } else {
-      alert(str.micError);
-    }
-    return;
-  }
-
-  isRecording = true;
-  recordedChunks = [];
-  recBtn.classList.add('recording');
-  recBtnWrap.classList.add('recording');
-  timerEl.classList.add('active');
-  visualizerEl.classList.add('active');
-
-  const hint = document.querySelector('[data-i18n="recHint"]');
-  if (hint) hint.textContent = i18n[currentLang].recHintStop;
-
-  // Timer
-  seconds = 0;
-  timerEl.textContent = '00:00';
-  timerInterval = setInterval(() => {
-    seconds++;
-    const m = String(Math.floor(seconds / 60)).padStart(2, '0');
-    const s = String(seconds % 60).padStart(2, '0');
-    timerEl.textContent = m + ':' + s;
-  }, 1000);
-
-  // Visualizer
-  recAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  const source = recAudioCtx.createMediaStreamSource(recStream);
-  recAnalyser = recAudioCtx.createAnalyser();
-  recAnalyser.fftSize = 128;
-  source.connect(recAnalyser);
-  animateVisualizer();
-
-  // Determine supported MIME type
-  const mimeTypes = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus', ''];
-  let chosenMime = '';
-  for (const mt of mimeTypes) {
-    if (mt === '' || MediaRecorder.isTypeSupported(mt)) {
-      chosenMime = mt;
-      break;
-    }
-  }
-
-  const options = chosenMime ? { mimeType: chosenMime } : {};
-  mediaRecorder = new MediaRecorder(recStream, options);
-
-  mediaRecorder.ondataavailable = e => {
-    if (e.data.size > 0) recordedChunks.push(e.data);
-  };
-
-  mediaRecorder.onstop = () => {
-    const actualMime = mediaRecorder.mimeType || chosenMime || 'audio/webm';
-    const blob = new Blob(recordedChunks, { type: actualMime });
-    handleAudioBlob(blob);
-  };
-
-  mediaRecorder.start();
 }
 
-function stopRecording() {
+/* ═══════════════════════════════════════ */
+/*  VISUALIZER SETUP                      */
+/* ═══════════════════════════════════════ */
+var vizEl = document.getElementById("viz");
+var BAR_COUNT = 36;
+for (var i = 0; i < BAR_COUNT; i++) {
+  var bar = document.createElement("div");
+  bar.className = "viz-bar";
+  bar.style.height = "2px";
+  vizEl.appendChild(bar);
+}
+
+/* ═══════════════════════════════════════ */
+/*  RECORDING                             */
+/* ═══════════════════════════════════════ */
+var mediaRecorder = null;
+var chunks = [];
+var isRecording = false;
+var timerInt = null;
+var secs = 0;
+var recStream = null;
+var recCtx = null;
+var recAnalyser = null;
+var animId = null;
+var currentURL = null;
+
+function toggleRecord() {
+  if (!isRecording) {
+    startRec();
+  } else {
+    stopRec();
+  }
+}
+
+function startRec() {
+  navigator.mediaDevices.getUserMedia({ audio: true }).then(function(stream) {
+    recStream = stream;
+    isRecording = true;
+    chunks = [];
+
+    document.getElementById("recBtn").classList.add("on");
+    document.getElementById("recWrap").classList.add("on");
+    document.getElementById("timerEl").classList.add("on");
+    vizEl.classList.add("on");
+    document.getElementById("t_recHint").textContent = T("recHintStop");
+
+    // Timer
+    secs = 0;
+    document.getElementById("timerEl").textContent = "00:00";
+    timerInt = setInterval(function() {
+      secs++;
+      var m = String(Math.floor(secs / 60)).padStart(2, "0");
+      var s = String(secs % 60).padStart(2, "0");
+      document.getElementById("timerEl").textContent = m + ":" + s;
+    }, 1000);
+
+    // Visualizer
+    recCtx = new (window.AudioContext || window.webkitAudioContext)();
+    var src = recCtx.createMediaStreamSource(stream);
+    recAnalyser = recCtx.createAnalyser();
+    recAnalyser.fftSize = 128;
+    src.connect(recAnalyser);
+    drawViz();
+
+    // MediaRecorder
+    var mimeTypes = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg;codecs=opus", ""];
+    var mime = "";
+    for (var i = 0; i < mimeTypes.length; i++) {
+      if (mimeTypes[i] === "" || MediaRecorder.isTypeSupported(mimeTypes[i])) {
+        mime = mimeTypes[i];
+        break;
+      }
+    }
+
+    var opts = mime ? { mimeType: mime } : {};
+    mediaRecorder = new MediaRecorder(stream, opts);
+
+    mediaRecorder.ondataavailable = function(e) {
+      if (e.data && e.data.size > 0) {
+        chunks.push(e.data);
+      }
+    };
+
+    mediaRecorder.onstop = function() {
+      var usedMime = mediaRecorder.mimeType || mime || "audio/webm";
+      var blob = new Blob(chunks, { type: usedMime });
+      processAudio(blob);
+    };
+
+    mediaRecorder.start();
+
+  }).catch(function(err) {
+    if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
+      alert(T("micDenied"));
+    } else {
+      alert(T("micError"));
+    }
+  });
+}
+
+function stopRec() {
   if (!isRecording) return;
   isRecording = false;
 
-  mediaRecorder.stop();
-  recStream.getTracks().forEach(t => t.stop());
+  if (mediaRecorder && mediaRecorder.state !== "inactive") {
+    mediaRecorder.stop();
+  }
+  if (recStream) {
+    recStream.getTracks().forEach(function(t) { t.stop(); });
+    recStream = null;
+  }
 
-  recBtn.classList.remove('recording');
-  recBtnWrap.classList.remove('recording');
-  timerEl.classList.remove('active');
-  visualizerEl.classList.remove('active');
+  document.getElementById("recBtn").classList.remove("on");
+  document.getElementById("recWrap").classList.remove("on");
+  document.getElementById("timerEl").classList.remove("on");
+  vizEl.classList.remove("on");
+  document.getElementById("t_recHint").textContent = T("recHint");
 
-  const hint = document.querySelector('[data-i18n="recHint"]');
-  if (hint) hint.textContent = i18n[currentLang].recHint;
-
-  clearInterval(timerInterval);
-  cancelAnimationFrame(recAnimFrame);
+  clearInterval(timerInt);
+  if (animId) {
+    cancelAnimationFrame(animId);
+    animId = null;
+  }
 
   // Reset bars
-  visualizerEl.querySelectorAll('.bar').forEach(b => b.style.height = '3px');
+  var bars = vizEl.querySelectorAll(".viz-bar");
+  for (var i = 0; i < bars.length; i++) {
+    bars[i].style.height = "2px";
+  }
 
-  // Close visualizer audio context
-  if (recAudioCtx) {
-    recAudioCtx.close().catch(() => {});
-    recAudioCtx = null;
+  if (recCtx) {
+    try { recCtx.close(); } catch(e) {}
+    recCtx = null;
+    recAnalyser = null;
   }
 }
 
-function animateVisualizer() {
-  if (!recAnalyser) return;
-  const data = new Uint8Array(recAnalyser.frequencyBinCount);
+function drawViz() {
+  if (!recAnalyser || !isRecording) return;
+  var data = new Uint8Array(recAnalyser.frequencyBinCount);
   recAnalyser.getByteFrequencyData(data);
-  const bars = visualizerEl.querySelectorAll('.bar');
-  const step = Math.max(1, Math.floor(data.length / BAR_COUNT));
-  for (let i = 0; i < BAR_COUNT; i++) {
-    const val = data[i * step] || 0;
-    const h = Math.max(3, (val / 255) * 50);
-    bars[i].style.height = h + 'px';
+  var bars = vizEl.querySelectorAll(".viz-bar");
+  var step = Math.max(1, Math.floor(data.length / BAR_COUNT));
+  for (var i = 0; i < BAR_COUNT; i++) {
+    var val = data[i * step] || 0;
+    var h = Math.max(2, (val / 255) * 44);
+    if (i < bars.length) bars[i].style.height = h + "px";
   }
-  recAnimFrame = requestAnimationFrame(animateVisualizer);
+  animId = requestAnimationFrame(drawViz);
 }
 
-// ══════════════════════════════════════════
-// Upload / Drag-and-Drop
-// ══════════════════════════════════════════
-const dropZone = document.getElementById('dropZone');
-const fileInput = document.getElementById('fileInput');
+/* ═══════════════════════════════════════ */
+/*  FILE UPLOAD                           */
+/* ═══════════════════════════════════════ */
+var dropzone = document.getElementById("dropzone");
+var fileIn = document.getElementById("fileIn");
 
-dropZone.addEventListener('dragover', e => {
+dropzone.addEventListener("dragover", function(e) {
   e.preventDefault();
-  dropZone.classList.add('dragover');
+  e.stopPropagation();
+  dropzone.classList.add("over");
 });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-dropZone.addEventListener('drop', e => {
+
+dropzone.addEventListener("dragleave", function(e) {
   e.preventDefault();
-  dropZone.classList.remove('dragover');
-  const file = e.dataTransfer.files[0];
-  if (file) handleAudioBlob(file);
-});
-fileInput.addEventListener('change', e => {
-  const file = e.target.files[0];
-  if (file) handleAudioBlob(file);
-  fileInput.value = '';
+  e.stopPropagation();
+  dropzone.classList.remove("over");
 });
 
-// ══════════════════════════════════════════
-// Handle Audio Blob → Decode → Hash
-// ══════════════════════════════════════════
-let currentObjectURL = null;
+dropzone.addEventListener("drop", function(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  dropzone.classList.remove("over");
+  if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+    processAudio(e.dataTransfer.files[0]);
+  }
+});
 
-async function handleAudioBlob(blob) {
+fileIn.addEventListener("change", function() {
+  if (fileIn.files && fileIn.files.length > 0) {
+    processAudio(fileIn.files[0]);
+  }
+  fileIn.value = "";
+});
+
+/* ═══════════════════════════════════════ */
+/*  PROCESS AUDIO BLOB/FILE               */
+/* ═══════════════════════════════════════ */
+function processAudio(blob) {
   // Show player
-  if (currentObjectURL) URL.revokeObjectURL(currentObjectURL);
-  currentObjectURL = URL.createObjectURL(blob);
-  audioPlayer.src = currentObjectURL;
-  audioPlayer.load();
-  playerSection.classList.add('visible');
+  if (currentURL) {
+    URL.revokeObjectURL(currentURL);
+  }
+  currentURL = URL.createObjectURL(blob);
+  var player = document.getElementById("player");
+  player.src = currentURL;
+  player.load();
+  document.getElementById("playerBox").classList.add("show");
 
   // Show processing
-  resultSection.classList.remove('visible');
-  processingEl.classList.add('visible');
+  document.getElementById("resultBox").classList.remove("show");
+  document.getElementById("proc").classList.add("show");
 
-  try {
-    const arrayBuffer = await blob.arrayBuffer();
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    let audioBuffer;
-    try {
-      audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-    } finally {
-      audioCtx.close().catch(() => {});
-    }
-    const hash = generateHash(audioBuffer);
-    displayResult(hash);
-  } catch (err) {
-    console.error('Audio decoding failed:', err);
-    hashOutput.textContent = 'Error decoding audio. Try a different file.';
-    resultSection.classList.add('visible');
-  }
-
-  processingEl.classList.remove('visible');
+  // Read as ArrayBuffer
+  var reader = new FileReader();
+  reader.onload = function() {
+    var arrayBuf = reader.result;
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    ctx.decodeAudioData(arrayBuf, function(audioBuffer) {
+      try { ctx.close(); } catch(e) {}
+      var hash = generateHash(audioBuffer);
+      showResult(hash);
+    }, function(err) {
+      try { ctx.close(); } catch(e) {}
+      console.error("Decode error:", err);
+      document.getElementById("hashOut").textContent = T("errDecode");
+      document.getElementById("hashLen").textContent = "";
+      document.getElementById("resultBox").classList.add("show");
+      document.getElementById("proc").classList.remove("show");
+    });
+  };
+  reader.onerror = function() {
+    console.error("FileReader error");
+    document.getElementById("proc").classList.remove("show");
+  };
+  reader.readAsArrayBuffer(blob);
 }
 
-// ══════════════════════════════════════════
-// The Core Algorithm (STRICT MATH)
-// ══════════════════════════════════════════
+/* ═══════════════════════════════════════ */
+/*  HASH ALGORITHM (STRICT)               */
+/* ═══════════════════════════════════════ */
 function generateHash(audioBuffer) {
-  const rawData = audioBuffer.getChannelData(0);
-  const blockSize = Math.floor(rawData.length / 100);
-  const averages = [];
+  var rawData = audioBuffer.getChannelData(0);
+  var blockSize = Math.floor(rawData.length / 100);
+  var averages = [];
 
-  // Step 1: Compute 100 chunk averages (absolute values)
-  for (let i = 0; i < 100; i++) {
-    let sum = 0;
-    const start = i * blockSize;
-    for (let j = 0; j < blockSize; j++) {
+  // Step 1: 100 chunk averages of absolute values
+  for (var i = 0; i < 100; i++) {
+    var sum = 0;
+    var start = i * blockSize;
+    for (var j = 0; j < blockSize; j++) {
       sum += Math.abs(rawData[start + j]);
     }
     averages.push(sum / blockSize);
   }
 
-  // Step 2: Find max average
-  let maxAvg = 0;
-  for (let i = 0; i < 100; i++) {
+  // Step 2: Find max
+  var maxAvg = 0;
+  for (var i = 0; i < 100; i++) {
     if (averages[i] > maxAvg) maxAvg = averages[i];
   }
 
   // Step 3: Normalize, boost, map to ASCII
-  let result = '';
-  for (let i = 0; i < 100; i++) {
-    let normalizedVol = maxAvg > 0 ? (averages[i] / maxAvg) : 0;
-    let boostedVol = Math.min(normalizedVol * 1.5, 1.0);
-    let charCode = Math.floor((boostedVol * 90) + 32);
+  var result = "";
+  for (var i = 0; i < 100; i++) {
+    var normalizedVol = maxAvg > 0 ? (averages[i] / maxAvg) : 0;
+    var boostedVol = Math.min(normalizedVol * 1.5, 1.0);
+    var charCode = Math.floor((boostedVol * 90) + 32);
 
-    // Escape fix for OpenSCAD: skip " (34), ' (39), \ (92)
-    if (charCode === 34 || charCode === 39 || charCode === 92) charCode++;
+    // Escape fix: skip " (34), ' (39), \ (92)
+    if (charCode === 34 || charCode === 39 || charCode === 92) {
+      charCode++;
+    }
 
     result += String.fromCharCode(charCode);
   }
@@ -972,55 +922,71 @@ function generateHash(audioBuffer) {
   return result;
 }
 
-// ══════════════════════════════════════════
-// Display Result
-// ══════════════════════════════════════════
-function displayResult(hash) {
-  hashOutput.textContent = hash;
-  hashLength.textContent = hash.length + ' ' + i18n[currentLang].chars;
-  resultSection.classList.add('visible');
+/* ═══════════════════════════════════════ */
+/*  SHOW RESULT                           */
+/* ═══════════════════════════════════════ */
+function showResult(hash) {
+  document.getElementById("hashOut").textContent = hash;
+  document.getElementById("hashLen").textContent = hash.length + " " + T("chars");
+  document.getElementById("proc").classList.remove("show");
+  document.getElementById("resultBox").classList.add("show");
 }
 
-// ══════════════════════════════════════════
-// Copy to Clipboard
-// ══════════════════════════════════════════
-const copyBtn = document.getElementById('copyBtn');
+/* ═══════════════════════════════════════ */
+/*  COPY TO CLIPBOARD                     */
+/* ═══════════════════════════════════════ */
+var copyTimeout = null;
 
-copyBtn.addEventListener('click', async () => {
-  const text = hashOutput.textContent;
-  if (!text) return;
+function copyHash() {
+  var text = document.getElementById("hashOut").textContent;
+  if (!text || text.length === 0) return;
 
-  try {
-    await navigator.clipboard.writeText(text);
-  } catch {
-    // Fallback
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.position = 'fixed';
-    ta.style.left = '-9999px';
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
+  var btn = document.getElementById("copyBtn");
+  var span = document.getElementById("t_copyBtn");
+
+  // Try modern clipboard API first
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() {
+      showCopied(btn, span);
+    }, function() {
+      fallbackCopy(text, btn, span);
+    });
+  } else {
+    fallbackCopy(text, btn, span);
   }
+}
 
-  // Visual feedback
-  copyBtn.classList.add('copied');
-  const span = copyBtn.querySelector('[data-i18n="copyBtn"]');
-  const icon = document.getElementById('copyIcon');
-  const prevText = span.textContent;
-  span.textContent = i18n[currentLang].copied;
-  icon.innerHTML = '<polyline points="20 6 9 17 4 12"/>';
+function fallbackCopy(text, btn, span) {
+  var ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.position = "fixed";
+  ta.style.left = "-9999px";
+  ta.style.top = "-9999px";
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try {
+    document.execCommand("copy");
+    showCopied(btn, span);
+  } catch(e) {
+    // silent fail
+  }
+  document.body.removeChild(ta);
+}
 
-  setTimeout(() => {
-    copyBtn.classList.remove('copied');
-    span.textContent = prevText;
-    icon.innerHTML = '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>';
+function showCopied(btn, span) {
+  btn.classList.add("ok");
+  span.textContent = T("copied");
+
+  if (copyTimeout) clearTimeout(copyTimeout);
+  copyTimeout = setTimeout(function() {
+    btn.classList.remove("ok");
+    span.textContent = T("copyBtn");
   }, 2000);
-});
+}
 
-// Init language
-setLang('en');
+/* Init */
+applyLang();
 </script>
 </body>
 </html>
