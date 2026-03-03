@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Hash Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg-primary: #09090b;
+            --bg-secondary: #18181b;
+            --bg-tertiary: #27272a;
+            --bg-hover: #3f3f46;
+            --border: #2e2e33;
+            --border-hover: #52525b;
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --accent: #6d28d9;
+            --accent-hover: #7c3aed;
+            --accent-glow: rgba(124, 58, 237, 0.25);
+            --red: #ef4444;
+            --red-glow: rgba(239, 68, 68, 0.3);
+            --green: #22c55e;
+            --green-glow: rgba(34, 197, 94, 0.25);
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* Ambient background effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 30% 20%, rgba(109, 40, 217, 0.06) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 80%, rgba(124, 58, 237, 0.04) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            width: 100%;
+            max-width: 720px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 8px 0;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent), #a855f7);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: -0.02em;
+        }
+
+        .logo-text span {
+            color: var(--text-muted);
+            font-weight: 400;
+            font-size: 13px;
+            margin-left: 6px;
+        }
+
+        .lang-select {
+            position: relative;
+        }
+
+        .lang-select select {
+            appearance: none;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            padding: 8px 34px 8px 12px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition);
+            outline: none;
+        }
+
+        .lang-select select:hover {
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+        }
+
+        .lang-select select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .lang-select::after {
+            content: '▾';
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 12px;
+            pointer-events: none;
+        }
+
+        /* Main Container */
+        .container {
+            width: 100%;
+            max-width: 720px;
+            padding: 32px 8px 48px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-title {
+            text-align: center;
+            margin-bottom: 8px;
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #fff 0%, #a1a1aa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 32px;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        /* Tabs */
+        .tabs-wrapper {
+            display: flex;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 16px;
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            border-radius: 9px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition);
+            position: relative;
+            letter-spacing: -0.01em;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-secondary);
+        }
+
+        .tab-btn.active {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.05);
+        }
+
+        /* Panels */
+        .tab-panel {
+            display: none;
+            animation: fadeSlideIn 0.35s ease;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Record Panel */
+        .record-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 48px 20px;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .record-btn-wrapper {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        /* Pulse rings */
+        .pulse-ring {
+            position: absolute;
+            inset: -16px;
+            border-radius: 50%;
+            border: 2px solid var(--red);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .recording .pulse-ring:nth-child(1) {
+            animation: pulseRing 1.8s ease-out infinite;
+        }
+
+        .recording .pulse-ring:nth-child(2) {
+            animation: pulseRing 1.8s ease-out 0.6s infinite;
+        }
+
+        .recording .pulse-ring:nth-child(3) {
+            animation: pulseRing 1.8s ease-out 1.2s infinite;
+        }
+
+        @keyframes pulseRing {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1.8); opacity: 0; }
+        }
+
+        .record-btn {
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            border: 3px solid var(--border-hover);
+            background: var(--bg-tertiary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition);
+            position: relative;
+            z-index: 2;
+        }
+
+        .record-btn:hover {
+            border-color: var(--red);
+            box-shadow: 0 0 30px var(--red-glow);
+            transform: scale(1.05);
+        }
+
+        .record-btn-inner {
+            width: 36px;
+            height: 36px;
+            background: var(--red);
+            border-radius: 50%;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 16px var(--red-glow);
+        }
+
+        .recording .record-btn {
+            border-color: var(--red);
+            box-shadow: 0 0 40px var(--red-glow);
+        }
+
+        .recording .record-btn-inner {
+            border-radius: 6px;
+            width: 28px;
+            height: 28px;
+        }
+
+        .record-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-bottom: 4px;
+            transition: color var(--transition);
+        }
+
+        .recording .record-label {
+            color: var(--red);
+        }
+
+        .record-timer {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.05em;
+            transition: color var(--transition);
+        }
+
+        .recording .record-timer {
+            color: var(--text-primary);
+        }
+
+        /* Visualizer */
+        .visualizer-container {
+            width: 100%;
+            height: 48px;
+            margin-top: 24px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+        }
+
+        .recording .visualizer-container {
+            display: flex;
+        }
+
+        .viz-bar {
+            width: 3px;
+            height: 6px;
+            background: var(--red);
+            border-radius: 2px;
+            transition: height 0.08s ease;
+        }
+
+        /* Upload Panel */
+        .upload-area {
+            position: relative;
+            padding: 56px 20px;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            border: 2px dashed var(--border);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .upload-area:hover, .upload-area.drag-over {
+            border-color: var(--accent);
+            background: rgba(109, 40, 217, 0.04);
+            box-shadow: 0 0 40px var(--accent-glow);
+        }
+
+        .upload-area.drag-over {
+            transform: scale(1.01);
+        }
+
+        .upload-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 16px;
+            background: var(--bg-tertiary);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            border: 1px solid var(--border);
+        }
+
+        .upload-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+
+        .upload-subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .upload-formats {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            margin-top: 16px;
+        }
+
+        .format-tag {
+            padding: 4px 10px;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.04em;
+            border: 1px solid var(--border);
+        }
+
+        .upload-area input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* Audio Preview */
+        .preview-section {
+            display: none;
+            margin-top: 24px;
+            animation: fadeSlideIn 0.4s ease;
+        }
+
+        .preview-section.visible {
+            display: block;
+        }
+
+        .section-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 12px;
+        }
+
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .audio-player-wrapper {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .audio-player-wrapper audio {
+            width: 100%;
+            height: 40px;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        audio::-webkit-media-controls-panel {
+            background: var(--bg-tertiary);
+        }
+
+        /* Processing */
+        .processing-indicator {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            margin-top: 24px;
+            padding: 32px;
+            animation: fadeSlideIn 0.3s ease;
+        }
+
+        .processing-indicator.visible {
+            display: flex;
+        }
+
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .processing-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Result Box */
+        .result-section {
+            display: none;
+            margin-top: 24px;
+            animation: fadeSlideIn 0.45s ease;
+        }
+
+        .result-section.visible {
+            display: block;
+        }
+
+        .result-box {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .result-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--green);
+        }
+
+        .result-badge-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--green-glow);
+        }
+
+        .char-count {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .result-textarea {
+            width: 100%;
+            padding: 16px;
+            background: transparent;
+            color: var(--accent-hover);
+            border: none;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            line-height: 1.7;
+            resize: none;
+            outline: none;
+            word-break: break-all;
+            min-height: 76px;
+        }
+
+        .result-footer {
+            display: flex;
+            justify-content: flex-end;
+            padding: 12px 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .copy-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 9px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 0 24px var(--accent-glow);
+            transform: translateY(-1px);
+        }
+
+        .copy-btn:active {
+            transform: translateY(0);
+        }
+
+        .copy-btn.copied {
+            background: var(--green);
+            box-shadow: 0 0 24px var(--green-glow);
+        }
+
+        .copy-btn svg {
+            width: 15px;
+            height: 15px;
+            fill: currentColor;
+        }
+
+        /* Footer */
+        .app-footer {
+            text-align: center;
+            padding: 16px;
+            font-size: 12px;
+            color: var(--text-muted);
+            position: relative;
+            z-index: 10;
+        }
+
+        .app-footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--bg-tertiary); border-radius: 3px; }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .container { padding: 24px 16px 48px; }
+            .top-bar { padding: 16px 16px 0; }
+            .hero-title { font-size: 22px; }
+            .record-btn { width: 76px; height: 76px; }
+            .record-btn-inner { width: 30px; height: 30px; }
+            .recording .record-btn-inner { width: 24px; height: 24px; }
+            .record-timer { font-size: 24px; }
+            .upload-area { padding: 40px 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div class="logo-area">
+            <div class="logo-icon">🔊</div>
+            <div class="logo-text" data-i18n="logoTitle">AudioHash<span data-i18n="logoSub">for 3D Print</span></div>
+        </div>
+        <div class="lang-select">
+            <select id="langSelector">
+                <option value="en">🇬🇧 English</option>
+                <option value="ru">🇷🇺 Русский</option>
+                <option value="es">🇪🇸 Español</option>
+                <option value="de">🇩🇪 Deutsch</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1 class="hero-title" data-i18n="heroTitle">Audio → Hash String</h1>
+        <p class="hero-subtitle" data-i18n="heroSubtitle">Record or upload audio to generate a 100-character ASCII string for your 3D printing generator.</p>
+
+        <!-- Tabs -->
+        <div class="tabs-wrapper">
+            <button class="tab-btn active" data-tab="record" data-i18n="tabRecord">🎙️ Record</button>
+            <button class="tab-btn" data-tab="upload" data-i18n="tabUpload">📁 Upload</button>
+        </div>
+
+        <!-- Record Panel -->
+        <div class="tab-panel active" id="panel-record">
+            <div class="record-area">
+                <div class="record-btn-wrapper" id="recordWrapper">
+                    <div class="pulse-ring"></div>
+                    <div class="pulse-ring"></div>
+                    <div class="pulse-ring"></div>
+                    <button class="record-btn" id="recordBtn" aria-label="Record">
+                        <div class="record-btn-inner"></div>
+                    </button>
+                </div>
+                <div class="record-label" data-i18n="recordLabel">Click to record</div>
+                <div class="record-timer" id="recordTimer">00:00</div>
+                <div class="visualizer-container" id="visualizer"></div>
+            </div>
+        </div>
+
+        <!-- Upload Panel -->
+        <div class="tab-panel" id="panel-upload">
+            <div class="upload-area" id="dropZone">
+                <input type="file" id="fileInput" accept=".mp3,.wav,.m4a,.webm,audio/*">
+                <div class="upload-icon">📂</div>
+                <div class="upload-title" data-i18n="uploadTitle">Drop your audio file here</div>
+                <div class="upload-subtitle" data-i18n="uploadSubtitle">or click to browse files</div>
+                <div class="upload-formats">
+                    <span class="format-tag">MP3</span>
+                    <span class="format-tag">WAV</span>
+                    <span class="format-tag">M4A</span>
+                    <span class="format-tag">WEBM</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Audio Preview -->
+        <div class="preview-section" id="previewSection">
+            <div class="section-label"><span data-i18n="previewLabel">Audio Preview</span></div>
+            <div class="audio-player-wrapper">
+                <audio controls id="audioPlayer"></audio>
+            </div>
+        </div>
+
+        <!-- Processing -->
+        <div class="processing-indicator" id="processing">
+            <div class="spinner"></div>
+            <div class="processing-text" data-i18n="processingText">Generating hash string…</div>
+        </div>
+
+        <!-- Result -->
+        <div class="result-section" id="resultSection">
+            <div class="section-label"><span data-i18n="resultLabel">Generated Hash String</span></div>
+            <div class="result-box">
+                <div class="result-header">
+                    <div class="result-badge">
+                        <div class="result-badge-dot"></div>
+                        <span data-i18n="resultReady">Ready for OpenSCAD</span>
+                    </div>
+                    <div class="char-count" id="charCount">100 chars</div>
+                </div>
+                <textarea class="result-textarea" id="resultText" readonly rows="3"></textarea>
+                <div class="result-footer">
+                    <button class="copy-btn" id="copyBtn">
+                        <svg viewBox="0 0 24 24" id="copyIcon"><path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                        <span data-i18n="copyBtn">Copy to Clipboard</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-footer" data-i18n="footer">100% client-side · No data leaves your browser</div>
+
+<script>
+// ============================
+// Internationalization
+// ============================
+const translations = {
+    en: {
+        logoTitle: 'AudioHash',
+        logoSub: 'for 3D Print',
+        heroTitle: 'Audio → Hash String',
+        heroSubtitle: 'Record or upload audio to generate a 100-character ASCII string for your 3D printing generator.',
+        tabRecord: '🎙️ Record',
+        tabUpload: '📁 Upload',
+        recordLabel: 'Click to record',
+        recordLabelActive: 'Recording… Click to stop',
+        uploadTitle: 'Drop your audio file here',
+        uploadSubtitle: 'or click to browse files',
+        previewLabel: 'Audio Preview',
+        processingText: 'Generating hash string…',
+        resultLabel: 'Generated Hash String',
+        resultReady: 'Ready for OpenSCAD',
+        copyBtn: 'Copy to Clipboard',
+        copiedBtn: 'Copied!',
+        footer: '100% client-side · No data leaves your browser',
+        micDenied: 'Microphone access denied. Please allow microphone permissions in your browser settings.',
+        micError: 'Could not access microphone. Please check your device and permissions.',
+        fileError: 'Could not decode the audio file. Please try another format.',
+    },
+    ru: {
+        logoTitle: 'АудиоХэш',
+        logoSub: 'для 3D-печати',
+        heroTitle: 'Аудио → Хэш-строка',
+        heroSubtitle: 'Запишите или загрузите аудио для генерации 100-символьной ASCII-строки для вашего генератора 3D-печати.',
+        tabRecord: '🎙️ Запись',
+        tabUpload: '📁 Загрузка',
+        recordLabel: 'Нажмите для записи',
+        recordLabelActive: 'Запись… Нажмите для остановки',
+        uploadTitle: 'Перетащите аудиофайл сюда',
+        uploadSubtitle: 'или нажмите для выбора файла',
+        previewLabel: 'Предпрослушивание',
+        processingText: 'Генерация хэш-строки…',
+        resultLabel: 'Сгенерированная хэш-строка',
+        resultReady: 'Готово для OpenSCAD',
+        copyBtn: 'Копировать',
+        copiedBtn: 'Скопировано!',
+        footer: '100% на стороне клиента · Данные не покидают ваш браузер',
+        micDenied: 'Доступ к микрофону запрещён. Пожалуйста, разрешите доступ к микрофону в настройках браузера.',
+        micError: 'Не удалось получить доступ к микрофону. Проверьте устройство и разрешения.',
+        fileError: 'Не удалось декодировать аудиофайл. Попробуйте другой формат.',
+    },
+    es: {
+        logoTitle: 'AudioHash',
+        logoSub: 'para impresión 3D',
+        heroTitle: 'Audio → Cadena Hash',
+        heroSubtitle: 'Graba o sube audio para generar una cadena ASCII de 100 caracteres para tu generador de impresión 3D.',
+        tabRecord: '🎙️ Grabar',
+        tabUpload: '📁 Subir',
+        recordLabel: 'Haz clic para grabar',
+        recordLabelActive: 'Grabando… Haz clic para detener',
+        uploadTitle: 'Arrastra tu archivo de audio aquí',
+        uploadSubtitle: 'o haz clic para buscar archivos',
+        previewLabel: 'Vista previa de audio',
+        processingText: 'Generando cadena hash…',
+        resultLabel: 'Cadena Hash Generada',
+        resultReady: 'Listo para OpenSCAD',
+        copyBtn: 'Copiar al portapapeles',
+        copiedBtn: '¡Copiado!',
+        footer: '100% del lado del cliente · Ningún dato sale de tu navegador',
+        micDenied: 'Acceso al micrófono denegado. Por favor, permite los permisos del micrófono en la configuración de tu navegador.',
+        micError: 'No se pudo acceder al micrófono. Verifica tu dispositivo y permisos.',
+        fileError: 'No se pudo decodificar el archivo de audio. Prueba con otro formato.',
+    },
+    de: {
+        logoTitle: 'AudioHash',
+        logoSub: 'für 3D-Druck',
+        heroTitle: 'Audio → Hash-String',
+        heroSubtitle: 'Nehmen Sie Audio auf oder laden Sie es hoch, um einen 100-Zeichen ASCII-String für Ihren 3D-Druck-Generator zu erzeugen.',
+        tabRecord: '🎙️ Aufnahme',
+        tabUpload: '📁 Hochladen',
+        recordLabel: 'Klicken zum Aufnehmen',
+        recordLabelActive: 'Aufnahme… Klicken zum Stoppen',
+        uploadTitle: 'Audiodatei hierher ziehen',
+        uploadSubtitle: 'oder klicken zum Durchsuchen',
+        previewLabel: 'Audio-Vorschau',
+        processingText: 'Hash-String wird generiert…',
+        resultLabel: 'Generierter Hash-String',
+        resultReady: 'Bereit für OpenSCAD',
+        copyBtn: 'In Zwischenablage kopieren',
+        copiedBtn: 'Kopiert!',
+        footer: '100% clientseitig · Keine Daten verlassen Ihren Browser',
+        micDenied: 'Mikrofonzugriff verweigert. Bitte erlauben Sie den Mikrofonzugriff in Ihren Browsereinstellungen.',
+        micError: 'Zugriff auf das Mikrofon nicht möglich. Überprüfen Sie Ihr Gerät und die Berechtigungen.',
+        fileError: 'Audiodatei konnte nicht dekodiert werden. Bitte versuchen Sie ein anderes Format.',
+    }
+};
+
+let currentLang = 'en';
+
+function t(key) {
+    return (translations[currentLang] && translations[currentLang][key]) || translations['en'][key] || key;
+}
+
+function applyLanguage(lang) {
+    currentLang = lang;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang][key] !== undefined) {
+            el.textContent = translations[lang][key];
+        }
+    });
+    // Update dynamic labels
+    const recordLabel = document.querySelector('.record-label');
+    if (isRecording) {
+        recordLabel.textContent = t('recordLabelActive');
+    } else {
+        recordLabel.textContent = t('recordLabel');
+    }
+    // Handle nested span in logo
+    const logoText = document.querySelector('.logo-text');
+    logoText.innerHTML = `${t('logoTitle')}<span data-i18n="logoSub">${t('logoSub')}</span>`;
+}
+
+document.getElementById('langSelector').addEventListener('change', (e) => {
+    applyLanguage(e.target.value);
+});
+
+
+// ============================
+// Tab Switching
+// ============================
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(`panel-${btn.dataset.tab}`).classList.add('active');
+    });
+});
+
+
+// ============================
+// Recording
+// ============================
+let isRecording = false;
+let mediaRecorder = null;
+let audioChunks = [];
+let timerInterval = null;
+let seconds = 0;
+let audioStream = null;
+let analyserNode = null;
+let animFrameId = null;
+let recAudioCtx = null;
+let currentBlobUrl = null;
+
+const recordBtn = document.getElementById('recordBtn');
+const recordWrapper = document.getElementById('recordWrapper');
+const recordTimer = document.getElementById('recordTimer');
+const recordLabel = document.querySelector('.record-label');
+const visualizerEl = document.getElementById('visualizer');
+
+// Create visualizer bars
+for (let i = 0; i < 40; i++) {
+    const bar = document.createElement('div');
+    bar.className = 'viz-bar';
+    visualizerEl.appendChild(bar);
+}
+
+recordBtn.addEventListener('click', async () => {
+    if (!isRecording) {
+        await startRecording();
+    } else {
+        stopRecording();
+    }
+});
+
+async function startRecording() {
+    try {
+        audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (err) {
+        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+            alert(t('micDenied'));
+        } else {
+            alert(t('micError'));
+        }
+        return;
+    }
+
+    isRecording = true;
+    audioChunks = [];
+    seconds = 0;
+    recordTimer.textContent = '00:00';
+    recordWrapper.classList.add('recording');
+    recordLabel.textContent = t('recordLabelActive');
+
+    // Setup analyser for visualizer
+    recAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const source = recAudioCtx.createMediaStreamSource(audioStream);
+    analyserNode = recAudioCtx.createAnalyser();
+    analyserNode.fftSize = 128;
+    source.connect(analyserNode);
+    animateVisualizer();
+
+    mediaRecorder = new MediaRecorder(audioStream);
+    mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunks.push(e.data);
+    };
+    mediaRecorder.onstop = () => {
+        const mimeType = mediaRecorder.mimeType || 'audio/webm';
+        const blob = new Blob(audioChunks, { type: mimeType });
+        // Close the recording AudioContext to free resources
+        if (recAudioCtx) {
+            recAudioCtx.close().catch(() => {});
+            recAudioCtx = null;
+            analyserNode = null;
+        }
+        handleAudioBlob(blob);
+        audioStream.getTracks().forEach(track => track.stop());
+        audioStream = null;
+        cancelAnimationFrame(animFrameId);
+    };
+    mediaRecorder.start();
+
+    timerInterval = setInterval(() => {
+        seconds++;
+        const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+        const s = String(seconds % 60).padStart(2, '0');
+        recordTimer.textContent = `${m}:${s}`;
+    }, 1000);
+}
+
+function stopRecording() {
+    isRecording = false;
+    recordWrapper.classList.remove('recording');
+    recordLabel.textContent = t('recordLabel');
+    clearInterval(timerInterval);
+    cancelAnimationFrame(animFrameId);
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+    }
+}
+
+function animateVisualizer() {
+    if (!analyserNode) return;
+    const bars = visualizerEl.querySelectorAll('.viz-bar');
+    const dataArray = new Uint8Array(analyserNode.frequencyBinCount);
+
+    function draw() {
+        animFrameId = requestAnimationFrame(draw);
+        analyserNode.getByteFrequencyData(dataArray);
+        bars.forEach((bar, i) => {
+            const val = dataArray[i % dataArray.length] || 0;
+            const h = Math.max(4, (val / 255) * 44);
+            bar.style.height = `${h}px`;
+        });
+    }
+    draw();
+}
+
+
+// ============================
+// File Upload / Drag & Drop
+// ============================
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+
+dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('drag-over');
+});
+
+dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('drag-over');
+});
+
+dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('audio/')) {
+        handleAudioBlob(file);
+    }
+});
+
+fileInput.addEventListener('change', () => {
+    const file = fileInput.files[0];
+    if (file) handleAudioBlob(file);
+});
+
+
+// ============================
+// Audio Processing Pipeline
+// ============================
+const audioPlayer = document.getElementById('audioPlayer');
+const previewSection = document.getElementById('previewSection');
+const processingEl = document.getElementById('processing');
+const resultSection = document.getElementById('resultSection');
+const resultText = document.getElementById('resultText');
+const charCount = document.getElementById('charCount');
+
+function handleAudioBlob(blob) {
+    // Revoke previous blob URL to free memory
+    if (currentBlobUrl) {
+        URL.revokeObjectURL(currentBlobUrl);
+    }
+
+    // Show preview
+    currentBlobUrl = URL.createObjectURL(blob);
+    audioPlayer.src = currentBlobUrl;
+    audioPlayer.load(); // Explicitly tell browser to load the new source
+    previewSection.classList.add('visible');
+
+    // Show processing
+    resultSection.classList.remove('visible');
+    processingEl.classList.add('visible');
+
+    // Read and decode
+    const reader = new FileReader();
+    reader.onload = async function () {
+        let decodeCtx = null;
+        try {
+            decodeCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const audioBuffer = await decodeCtx.decodeAudioData(reader.result);
+            const hashString = generateHashString(audioBuffer);
+
+            // Small delay for UX
+            setTimeout(() => {
+                processingEl.classList.remove('visible');
+                resultText.value = hashString;
+                charCount.textContent = `${hashString.length} chars`;
+                resultSection.classList.add('visible');
+            }, 600);
+        } catch (err) {
+            processingEl.classList.remove('visible');
+            alert(t('fileError'));
+            console.error(err);
+        } finally {
+            // Always close the decoding AudioContext to free resources
+            if (decodeCtx) {
+                decodeCtx.close().catch(() => {});
+            }
+        }
+    };
+    reader.readAsArrayBuffer(blob);
+}
+
+
+// ============================
+// THE CORE ALGORITHM
+// ============================
+function generateHashString(audioBuffer) {
+    const rawData = audioBuffer.getChannelData(0); // Channel 0 PCM
+    const blockSize = Math.floor(rawData.length / 100);
+    const averages = [];
+
+    // 1. Chunking & Averages
+    for (let i = 0; i < 100; i++) {
+        let sum = 0;
+        const start = i * blockSize;
+        for (let j = start; j < start + blockSize; j++) {
+            sum += Math.abs(rawData[j]);
+        }
+        averages.push(sum / blockSize);
+    }
+
+    // 2. Find Max
+    let maxAvg = 0;
+    for (let i = 0; i < averages.length; i++) {
+        if (averages[i] > maxAvg) maxAvg = averages[i];
+    }
+
+    // 3. Normalize, Boost, Map to ASCII
+    let result = '';
+    for (let i = 0; i < 100; i++) {
+        let normalizedVol = maxAvg > 0 ? (averages[i] / maxAvg) : 0;
+        let boostedVol = Math.min(normalizedVol * 1.5, 1.0);
+        let charCode = Math.floor((boostedVol * 90) + 32);
+
+        // ESCAPE STRING FIX: skip " ' and \
+        if (charCode === 34 || charCode === 39 || charCode === 92) {
+            charCode++;
+        }
+
+        result += String.fromCharCode(charCode);
+    }
+
+    return result;
+}
+
+
+// ============================
+// Copy to Clipboard
+// ============================
+const copyBtn = document.getElementById('copyBtn');
+
+copyBtn.addEventListener('click', async () => {
+    try {
+        await navigator.clipboard.writeText(resultText.value);
+    } catch {
+        // Fallback
+        resultText.select();
+        document.execCommand('copy');
+    }
+
+    copyBtn.classList.add('copied');
+    const span = copyBtn.querySelector('span');
+    span.textContent = t('copiedBtn');
+
+    // Swap icon to checkmark
+    const icon = document.getElementById('copyIcon');
+    icon.innerHTML = '<path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>';
+
+    setTimeout(() => {
+        copyBtn.classList.remove('copied');
+        span.textContent = t('copyBtn');
+        icon.innerHTML = '<path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>';
+    }, 2000);
+});
+</script>
+</body>
+</html>
