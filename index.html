@@ -5,450 +5,266 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Audio Hash Generator</title>
 <style>
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-:root {
-  --bg: #09090b;
-  --surface: #131316;
-  --surface2: #1a1a1f;
-  --surface3: #232329;
-  --border: #27272a;
-  --border-h: #3f3f46;
-  --txt: #fafafa;
-  --txt2: #a1a1aa;
-  --txt3: #52525b;
-  --accent: #8b5cf6;
-  --accent-g: rgba(139,92,246,0.2);
-  --green: #22c55e;
-  --green-g: rgba(34,197,94,0.25);
-  --red: #ef4444;
-  --red-g: rgba(239,68,68,0.3);
-  --r: 12px;
-  --t: 0.2s ease;
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#09090b;--s1:#131316;--s2:#1a1a1f;--s3:#232329;
+--bd:#27272a;--bdh:#3f3f46;
+--t1:#fafafa;--t2:#a1a1aa;--t3:#52525b;
+--ac:#8b5cf6;--acg:rgba(139,92,246,.2);
+--gr:#22c55e;--grg:rgba(34,197,94,.25);
+--rd:#ef4444;--rdg:rgba(239,68,68,.3);
+--r:12px;--tr:.2s ease
 }
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: var(--bg);
-  color: var(--txt);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+body{
+font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+background:var(--bg);color:var(--t1);
+min-height:100vh;display:flex;flex-direction:column;align-items:center
 }
-
-/* Glow */
-body::before {
-  content: '';
-  position: fixed;
-  top: -300px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(139,92,246,0.08), transparent 70%);
-  pointer-events: none;
+body::before{
+content:'';position:fixed;top:-300px;left:50%;transform:translateX(-50%);
+width:600px;height:600px;
+background:radial-gradient(circle,rgba(139,92,246,.08),transparent 70%);
+pointer-events:none;z-index:0
 }
 
 /* Header */
-.header {
-  width: 100%;
-  max-width: 640px;
-  padding: 24px 20px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.hdr{
+width:100%;max-width:640px;padding:24px 20px 0;
+display:flex;justify-content:space-between;align-items:center;
+position:relative;z-index:1
 }
+.brand a{
+color:var(--t2);text-decoration:none;font-size:13px;font-weight:500;
+transition:color var(--tr)
+}
+.brand a:hover{color:var(--ac)}
+.lang-sel{
+background:var(--s2);border:1px solid var(--bd);color:var(--t2);
+font-size:13px;padding:6px 10px;border-radius:8px;cursor:pointer;outline:none;
+font-family:inherit
+}
+.lang-sel:focus{border-color:var(--ac)}
 
-.brand a {
-  color: var(--txt2);
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: 500;
-  transition: color var(--t);
-}
-.brand a:hover { color: var(--accent); }
-
-.lang-sel {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  color: var(--txt2);
-  font-size: 13px;
-  padding: 6px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  outline: none;
-}
-.lang-sel:focus { border-color: var(--accent); }
-
-/* Container */
-.wrap {
-  width: 100%;
-  max-width: 640px;
-  padding: 20px;
-}
-
-.heading {
-  text-align: center;
-  margin-bottom: 4px;
-}
-.heading h1 {
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-.heading p {
-  color: var(--txt3);
-  font-size: 14px;
-  margin-top: 6px;
-}
+/* Wrap */
+.wrap{width:100%;max-width:640px;padding:20px;position:relative;z-index:1}
+.heading{text-align:center;margin-bottom:4px}
+.heading h1{font-size:24px;font-weight:700;letter-spacing:-.02em}
+.heading p{color:var(--t3);font-size:14px;margin-top:6px}
 
 /* Tabs */
-.tabs {
-  display: flex;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 4px;
-  margin: 24px 0 20px;
+.tabs{
+display:flex;background:var(--s1);border:1px solid var(--bd);
+border-radius:10px;padding:4px;margin:24px 0 20px
 }
-
-.tab-btn {
-  flex: 1;
-  padding: 11px;
-  font-size: 14px;
-  font-weight: 600;
-  font-family: inherit;
-  background: none;
-  border: none;
-  color: var(--txt3);
-  cursor: pointer;
-  border-radius: 7px;
-  transition: all var(--t);
+.tab-btn{
+flex:1;padding:11px;font-size:14px;font-weight:600;font-family:inherit;
+background:none;border:none;color:var(--t3);cursor:pointer;
+border-radius:7px;transition:all var(--tr)
 }
-.tab-btn:hover { color: var(--txt2); }
-.tab-btn.active {
-  color: var(--txt);
-  background: var(--surface3);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+.tab-btn:hover{color:var(--t2)}
+.tab-btn.active{
+color:var(--t1);background:var(--s3);
+box-shadow:0 2px 8px rgba(0,0,0,.3)
 }
 
 /* Panels */
-.panel { display: none; }
-.panel.active { display: block; animation: fadeIn 0.3s ease; }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+.panel{display:none}
+.panel.active{display:block;animation:fadeUp .3s ease}
+@keyframes fadeUp{
+from{opacity:0;transform:translateY(6px)}
+to{opacity:1;transform:translateY(0)}
 }
 
 /* Record */
-.rec-area {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 36px 0 20px;
+.rec-area{
+display:flex;flex-direction:column;align-items:center;padding:36px 0 20px
 }
-
-.rec-wrap {
-  position: relative;
-  width: 100px;
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.rec-wrap{
+position:relative;width:100px;height:100px;
+display:flex;align-items:center;justify-content:center
 }
-
-.ring {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 2px solid var(--red);
-  opacity: 0;
-  pointer-events: none;
+.ring{
+position:absolute;inset:0;border-radius:50%;
+border:2px solid var(--rd);opacity:0;pointer-events:none
 }
-.rec-wrap.on .ring { animation: pulse 2s ease-out infinite; }
-.rec-wrap.on .ring:nth-child(2) { animation-delay: 0.5s; }
-.rec-wrap.on .ring:nth-child(3) { animation-delay: 1s; }
-
-@keyframes pulse {
-  0% { opacity: 0.5; transform: scale(1); }
-  100% { opacity: 0; transform: scale(1.8); }
+.rec-wrap.on .ring{animation:pulse 2s ease-out infinite}
+.rec-wrap.on .ring:nth-child(2){animation-delay:.5s}
+.rec-wrap.on .ring:nth-child(3){animation-delay:1s}
+@keyframes pulse{
+0%{opacity:.5;transform:scale(1)}
+100%{opacity:0;transform:scale(1.8)}
 }
-
-.rec-btn {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  border: none;
-  background: linear-gradient(135deg, #ef4444, #dc2626);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--t);
-  box-shadow: 0 4px 20px var(--red-g);
-  position: relative;
-  z-index: 2;
+.rec-btn{
+width:80px;height:80px;border-radius:50%;border:none;
+background:linear-gradient(135deg,#ef4444,#dc2626);
+cursor:pointer;display:flex;align-items:center;justify-content:center;
+transition:all var(--tr);box-shadow:0 4px 20px var(--rdg);
+position:relative;z-index:2
 }
-.rec-btn:hover { transform: scale(1.05); }
-.rec-btn:active { transform: scale(0.96); }
-
-.rec-icon {
-  width: 24px;
-  height: 24px;
-  background: #fff;
-  border-radius: 50%;
-  transition: all var(--t);
+.rec-btn:hover{transform:scale(1.05)}
+.rec-btn:active{transform:scale(.96)}
+.rec-icon{
+width:24px;height:24px;background:#fff;border-radius:50%;
+transition:all var(--tr)
 }
-.rec-btn.on .rec-icon {
-  border-radius: 4px;
-  width: 22px;
-  height: 22px;
+.rec-btn.on .rec-icon{border-radius:4px;width:22px;height:22px}
+.timer{
+font-family:'Courier New',monospace;font-size:26px;font-weight:700;
+color:var(--t2);margin-top:16px;letter-spacing:.05em;transition:color var(--tr)
 }
-
-.timer {
-  font-family: 'Courier New', monospace;
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--txt2);
-  margin-top: 16px;
-  letter-spacing: 0.05em;
-  transition: color var(--t);
-}
-.timer.on { color: var(--red); }
-
-.rec-hint {
-  color: var(--txt3);
-  font-size: 13px;
-  margin-top: 8px;
-}
+.timer.on{color:var(--rd)}
+.rec-hint{color:var(--t3);font-size:13px;margin-top:8px}
 
 /* Visualizer */
-.viz {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 2px;
-  height: 44px;
-  margin-top: 16px;
-  opacity: 0;
-  transition: opacity 0.3s;
+.viz{
+display:flex;align-items:flex-end;justify-content:center;
+gap:2px;height:44px;margin-top:16px;opacity:0;transition:opacity .3s
 }
-.viz.on { opacity: 1; }
-.viz-bar {
-  width: 3px;
-  min-height: 2px;
-  background: var(--red);
-  border-radius: 2px;
-  transition: height 0.06s linear;
+.viz.on{opacity:1}
+.viz-bar{
+width:3px;min-height:2px;background:var(--rd);border-radius:2px;
+transition:height 60ms linear
 }
 
-/* Upload */
-.dropzone {
-  border: 2px dashed var(--border);
-  border-radius: var(--r);
-  padding: 44px 20px;
-  text-align: center;
-  cursor: pointer;
-  transition: all var(--t);
-  background: var(--surface);
-  position: relative;
+/* Upload / Dropzone */
+.dropzone{
+border:2px dashed var(--bd);border-radius:var(--r);
+padding:44px 20px;text-align:center;cursor:pointer;
+transition:all var(--tr);background:var(--s1);position:relative
 }
-.dropzone:hover, .dropzone.over {
-  border-color: var(--accent);
-  background: rgba(139,92,246,0.05);
+.dropzone:hover,.dropzone.over{
+border-color:var(--ac);background:rgba(139,92,246,.05)
 }
-.drop-icon { font-size: 38px; margin-bottom: 12px; display: block; }
-.drop-txt { color: var(--txt2); font-size: 14px; font-weight: 500; }
-.drop-sub { color: var(--txt3); font-size: 12px; margin-top: 6px; }
-.dropzone input {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  cursor: pointer;
+.drop-icon{font-size:38px;margin-bottom:12px;display:block}
+.drop-txt{color:var(--t2);font-size:14px;font-weight:500}
+.drop-sub{color:var(--t3);font-size:12px;margin-top:6px}
+.dropzone input{
+position:absolute;inset:0;width:100%;height:100%;
+opacity:0;cursor:pointer
 }
 
 /* Player */
-.player-box {
-  margin-top: 20px;
-  display: none;
+.player-box{margin-top:20px;display:none}
+.player-box.show{display:block;animation:fadeUp .3s ease}
+.player-lbl{
+font-size:11px;font-weight:600;text-transform:uppercase;
+letter-spacing:.08em;color:var(--t3);margin-bottom:8px
 }
-.player-box.show { display: block; animation: fadeIn 0.3s ease; }
-.player-lbl {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--txt3);
-  margin-bottom: 8px;
-}
-audio {
-  width: 100%;
-  height: 44px;
-  border-radius: 8px;
-}
+audio{width:100%;height:44px;border-radius:8px}
 
-/* Processing */
-.proc {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  padding: 28px;
-  gap: 12px;
+/* Processing spinner */
+.proc{
+display:none;flex-direction:column;align-items:center;
+padding:28px;gap:12px
 }
-.proc.show { display: flex; }
-.spin {
-  width: 32px;
-  height: 32px;
-  border: 3px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
+.proc.show{display:flex}
+.spin{
+width:32px;height:32px;border:3px solid var(--bd);
+border-top-color:var(--ac);border-radius:50%;
+animation:rot .7s linear infinite
 }
-@keyframes spin { to { transform: rotate(360deg); } }
-.proc-txt { color: var(--txt2); font-size: 14px; }
+@keyframes rot{to{transform:rotate(360deg)}}
+.proc-txt{color:var(--t2);font-size:14px}
 
 /* Result */
-.result {
-  margin-top: 24px;
-  display: none;
+.result{margin-top:24px;display:none}
+.result.show{display:block;animation:fadeUp .3s ease}
+.res-lbl{
+font-size:11px;font-weight:600;text-transform:uppercase;
+letter-spacing:.08em;color:var(--t3);margin-bottom:8px
 }
-.result.show { display: block; animation: fadeIn 0.3s ease; }
-.res-lbl {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--txt3);
-  margin-bottom: 8px;
+.hash-box{
+background:#0c0c0e;border:1px solid var(--bd);border-radius:10px;
+padding:18px;position:relative;overflow:hidden
 }
-
-.hash-box {
-  background: #0c0c0e;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 18px;
-  position: relative;
-  overflow: hidden;
+.hash-box::before{
+content:'';position:absolute;top:0;left:0;right:0;height:1px;
+background:linear-gradient(90deg,transparent,var(--ac),transparent);opacity:.4
 }
-.hash-box::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
-  opacity: 0.4;
+.hash-text{
+font-family:'Courier New',monospace;font-size:13px;line-height:1.8;
+color:var(--gr);word-break:break-all;
+user-select:none;-webkit-user-select:none;-moz-user-select:none;
+pointer-events:none
 }
-
-.hash-text {
-  font-family: 'Courier New', monospace;
-  font-size: 13px;
-  line-height: 1.8;
-  color: var(--green);
-  word-break: break-all;
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  pointer-events: none;
+.hash-info{
+display:flex;justify-content:flex-end;margin-top:8px;
+padding-top:8px;border-top:1px solid var(--bd)
 }
-
-.hash-info {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid var(--border);
+.hash-len{font-family:'Courier New',monospace;font-size:11px;color:var(--t3)}
+.warn{
+color:var(--t2);font-size:13px;line-height:1.5;margin-top:12px;
+padding:10px 14px;background:rgba(139,92,246,.06);
+border:1px solid rgba(139,92,246,.1);border-radius:10px
 }
-.hash-len {
-  font-family: 'Courier New', monospace;
-  font-size: 11px;
-  color: var(--txt3);
+.copy-btn{
+width:100%;margin-top:14px;padding:15px 20px;
+font-family:inherit;font-size:15px;font-weight:600;
+border:none;border-radius:10px;cursor:pointer;
+background:linear-gradient(135deg,var(--ac),#7c3aed);
+color:#fff;transition:all var(--tr);
+box-shadow:0 4px 16px var(--acg)
 }
-
-.warn {
-  color: var(--txt2);
-  font-size: 13px;
-  line-height: 1.5;
-  margin-top: 12px;
-  padding: 10px 14px;
-  background: rgba(139,92,246,0.06);
-  border: 1px solid rgba(139,92,246,0.1);
-  border-radius: 10px;
+.copy-btn:hover{
+transform:translateY(-1px);box-shadow:0 6px 24px rgba(139,92,246,.3)
 }
-
-.copy-btn {
-  width: 100%;
-  margin-top: 14px;
-  padding: 15px 20px;
-  font-family: inherit;
-  font-size: 15px;
-  font-weight: 600;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  background: linear-gradient(135deg, var(--accent), #7c3aed);
-  color: #fff;
-  transition: all var(--t);
-  box-shadow: 0 4px 16px var(--accent-g);
-}
-.copy-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(139,92,246,0.3); }
-.copy-btn:active { transform: translateY(0); }
-.copy-btn.ok {
-  background: linear-gradient(135deg, var(--green), #16a34a);
-  box-shadow: 0 4px 16px var(--green-g);
+.copy-btn:active{transform:translateY(0)}
+.copy-btn.ok{
+background:linear-gradient(135deg,var(--gr),#16a34a);
+box-shadow:0 4px 16px var(--grg)
 }
 
 /* Footer */
-.footer {
-  margin-top: 32px;
-  padding-bottom: 24px;
-  text-align: center;
-  color: var(--txt3);
-  font-size: 12px;
+.ftr{
+margin-top:32px;padding-bottom:24px;
+text-align:center;color:var(--t3);font-size:12px
 }
 
-@media (max-width: 500px) {
-  .wrap { padding: 14px; }
-  .heading h1 { font-size: 20px; }
-  .hash-text { font-size: 11px; }
-  .rec-btn { width: 68px; height: 68px; }
-  .rec-wrap { width: 86px; height: 86px; }
+@media(max-width:500px){
+.wrap{padding:14px}
+.heading h1{font-size:20px}
+.hash-text{font-size:11px}
+.rec-btn{width:68px;height:68px}
+.rec-wrap{width:86px;height:86px}
 }
 </style>
 </head>
 <body>
 
-<div class="header">
+<div class="hdr">
   <div class="brand">
     <a href="https://makerworld.com/ru/@SantaClaus" target="_blank" rel="noopener">Created by SantaClaus</a>
   </div>
-  <select class="lang-sel" id="langSel">
+  <select class="lang-sel" id="langSel" onchange="changeLang(this.value)">
     <option value="en">English</option>
     <option value="ru">Русский</option>
     <option value="es">Español</option>
     <option value="de">Deutsch</option>
+    <option value="fr">Français</option>
+    <option value="it">Italiano</option>
+    <option value="pt">Português</option>
+    <option value="zh">中文</option>
+    <option value="ja">日本語</option>
+    <option value="ko">한국어</option>
+    <option value="tr">Türkçe</option>
   </select>
 </div>
 
 <div class="wrap">
   <div class="heading">
-    <h1 id="t_title">Audio Hash Generator</h1>
-    <p id="t_subtitle">Convert sound into a 100-character hash for 3D printing</p>
+    <h1 id="elTitle">Audio Hash Generator</h1>
+    <p id="elSubtitle">Convert sound into a 100-character hash for 3D printing</p>
   </div>
 
   <div class="tabs">
-    <button class="tab-btn active" id="tabRec" onclick="switchTab('record')">
-      <span id="t_tabRec">🎙️ Record</span>
+    <button class="tab-btn active" id="btnTabRec" onclick="switchTab('record')">
+      <span id="elTabRec">🎙️ Record</span>
     </button>
-    <button class="tab-btn" id="tabUp" onclick="switchTab('upload')">
-      <span id="t_tabUp">📁 Upload</span>
+    <button class="tab-btn" id="btnTabUp" onclick="switchTab('upload')">
+      <span id="elTabUp">📁 Upload</span>
     </button>
   </div>
 
-  <!-- Record Panel -->
   <div class="panel active" id="panelRecord">
     <div class="rec-area">
       <div class="rec-wrap" id="recWrap">
@@ -460,226 +276,373 @@ audio {
         </button>
       </div>
       <div class="timer" id="timerEl">00:00</div>
-      <div class="rec-hint" id="t_recHint">Tap to start recording</div>
+      <div class="rec-hint" id="elRecHint">Tap to start recording</div>
       <div class="viz" id="viz"></div>
     </div>
   </div>
 
-  <!-- Upload Panel -->
   <div class="panel" id="panelUpload">
     <div class="dropzone" id="dropzone">
       <span class="drop-icon">📂</span>
-      <div class="drop-txt" id="t_dropTxt">Drop audio file here or click to browse</div>
-      <div class="drop-sub" id="t_dropSub">MP3, WAV, M4A, WEBM</div>
+      <div class="drop-txt" id="elDropTxt">Drop audio file here or click to browse</div>
+      <div class="drop-sub" id="elDropSub">MP3, WAV, M4A, WEBM</div>
       <input type="file" id="fileIn" accept=".mp3,.wav,.m4a,.webm,audio/*">
     </div>
   </div>
 
-  <!-- Processing -->
   <div class="proc" id="proc">
     <div class="spin"></div>
-    <div class="proc-txt" id="t_proc">Generating hash...</div>
+    <div class="proc-txt" id="elProc">Generating hash...</div>
   </div>
 
-  <!-- Player -->
   <div class="player-box" id="playerBox">
-    <div class="player-lbl" id="t_preview">Preview</div>
+    <div class="player-lbl" id="elPreview">Preview</div>
     <audio id="player" controls preload="auto"></audio>
   </div>
 
-  <!-- Result -->
   <div class="result" id="resultBox">
-    <div class="res-lbl" id="t_resLbl">Generated Hash String</div>
+    <div class="res-lbl" id="elResLbl">Generated Hash String</div>
     <div class="hash-box">
       <div class="hash-text" id="hashOut"></div>
       <div class="hash-info">
-        <span class="hash-len" id="hashLen">0 chars</span>
+        <span class="hash-len" id="hashLen"></span>
       </div>
     </div>
-    <div class="warn" id="t_warn">⚠️ Do not try to highlight the text. Please use the Copy button below to ensure you capture the invisible silence blocks!</div>
+    <div class="warn" id="elWarn"></div>
     <button class="copy-btn" id="copyBtn" onclick="copyHash()">
-      <span id="t_copyBtn">📋 Copy Hash for MakerWorld</span>
+      <span id="elCopyBtn">📋 Copy Hash for MakerWorld</span>
     </button>
   </div>
 </div>
 
-<div class="footer">
-  <span id="t_footer">100% client-side - No data is sent anywhere</span>
+<div class="ftr">
+  <span id="elFooter">100% client-side — No data is sent anywhere</span>
 </div>
 
 <script>
-/* ═══════════════════════════════════════ */
-/*  TRANSLATIONS                          */
-/* ═══════════════════════════════════════ */
-var LANG = {
+/* ===== TRANSLATIONS ===== */
+var TR = {
   en: {
     title: "Audio Hash Generator",
     subtitle: "Convert sound into a 100-character hash for 3D printing",
-    tabRec: "🎙️ Record",
-    tabUp: "📁 Upload",
+    tabRec: "\uD83C\uDF99\uFE0F Record",
+    tabUp: "\uD83D\uDCC1 Upload",
     recHint: "Tap to start recording",
-    recHintStop: "Tap to stop recording",
+    recStop: "Tap to stop recording",
     dropTxt: "Drop audio file here or click to browse",
     dropSub: "MP3, WAV, M4A, WEBM",
     preview: "Preview",
     proc: "Generating hash...",
     resLbl: "Generated Hash String",
-    warn: "⚠️ Do not try to highlight the text. Please use the Copy button below to ensure you capture the invisible silence blocks!",
-    copyBtn: "📋 Copy Hash for MakerWorld",
-    copied: "✅ Copied!",
-    footer: "100% client-side - No data is sent anywhere",
+    warn: "\u26A0\uFE0F Do not try to highlight the text. Please use the Copy button below to ensure you capture the invisible silence blocks!",
+    copyBtn: "\uD83D\uDCCB Copy Hash for MakerWorld",
+    copied: "\u2705 Copied!",
+    footer: "100% client-side \u2014 No data is sent anywhere",
     micDenied: "Microphone access denied. Please allow it in browser settings.",
-    micError: "Could not access microphone.",
+    micErr: "Could not access microphone.",
     chars: "chars",
-    errDecode: "Error decoding audio. Try a different file."
+    decodeErr: "Error decoding audio. Try a different file."
   },
   ru: {
-    title: "Аудио Хеш-Генератор",
-    subtitle: "Конвертируйте звук в 100-символьный хеш для 3D-печати",
-    tabRec: "🎙️ Запись",
-    tabUp: "📁 Загрузить",
-    recHint: "Нажмите, чтобы начать запись",
-    recHintStop: "Нажмите, чтобы остановить",
-    dropTxt: "Перетащите аудиофайл или нажмите для выбора",
+    title: "\u0410\u0443\u0434\u0438\u043E \u0425\u0435\u0448-\u0413\u0435\u043D\u0435\u0440\u0430\u0442\u043E\u0440",
+    subtitle: "\u041A\u043E\u043D\u0432\u0435\u0440\u0442\u0438\u0440\u0443\u0439\u0442\u0435 \u0437\u0432\u0443\u043A \u0432 100-\u0441\u0438\u043C\u0432\u043E\u043B\u044C\u043D\u044B\u0439 \u0445\u0435\u0448 \u0434\u043B\u044F 3D-\u043F\u0435\u0447\u0430\u0442\u0438",
+    tabRec: "\uD83C\uDF99\uFE0F \u0417\u0430\u043F\u0438\u0441\u044C",
+    tabUp: "\uD83D\uDCC1 \u0417\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044C",
+    recHint: "\u041D\u0430\u0436\u043C\u0438\u0442\u0435 \u0434\u043B\u044F \u0437\u0430\u043F\u0438\u0441\u0438",
+    recStop: "\u041D\u0430\u0436\u043C\u0438\u0442\u0435 \u0434\u043B\u044F \u043E\u0441\u0442\u0430\u043D\u043E\u0432\u043A\u0438",
+    dropTxt: "\u041F\u0435\u0440\u0435\u0442\u0430\u0449\u0438\u0442\u0435 \u0430\u0443\u0434\u0438\u043E\u0444\u0430\u0439\u043B \u0438\u043B\u0438 \u043D\u0430\u0436\u043C\u0438\u0442\u0435 \u0434\u043B\u044F \u0432\u044B\u0431\u043E\u0440\u0430",
     dropSub: "MP3, WAV, M4A, WEBM",
-    preview: "Предпрослушивание",
-    proc: "Генерация хеша...",
-    resLbl: "Сгенерированная хеш-строка",
-    warn: "⚠️ Не пытайтесь выделить текст вручную. Используйте кнопку Копировать ниже, чтобы скопировать невидимые блоки тишины!",
-    copyBtn: "📋 Копировать хеш для MakerWorld",
-    copied: "✅ Скопировано!",
-    footer: "100% на стороне клиента - Данные никуда не отправляются",
-    micDenied: "Доступ к микрофону запрещён. Разрешите в настройках браузера.",
-    micError: "Не удалось получить доступ к микрофону.",
-    chars: "символов",
-    errDecode: "Ошибка декодирования. Попробуйте другой файл."
+    preview: "\u041F\u0440\u0435\u0434\u043F\u0440\u043E\u0441\u043B\u0443\u0448\u0438\u0432\u0430\u043D\u0438\u0435",
+    proc: "\u0413\u0435\u043D\u0435\u0440\u0430\u0446\u0438\u044F \u0445\u0435\u0448\u0430...",
+    resLbl: "\u0421\u0433\u0435\u043D\u0435\u0440\u0438\u0440\u043E\u0432\u0430\u043D\u043D\u0430\u044F \u0445\u0435\u0448-\u0441\u0442\u0440\u043E\u043A\u0430",
+    warn: "\u26A0\uFE0F \u041D\u0435 \u043F\u044B\u0442\u0430\u0439\u0442\u0435\u0441\u044C \u0432\u044B\u0434\u0435\u043B\u0438\u0442\u044C \u0442\u0435\u043A\u0441\u0442. \u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0439\u0442\u0435 \u043A\u043D\u043E\u043F\u043A\u0443 \u041A\u043E\u043F\u0438\u0440\u043E\u0432\u0430\u0442\u044C, \u0447\u0442\u043E\u0431\u044B \u0441\u043A\u043E\u043F\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u043D\u0435\u0432\u0438\u0434\u0438\u043C\u044B\u0435 \u0431\u043B\u043E\u043A\u0438 \u0442\u0438\u0448\u0438\u043D\u044B!",
+    copyBtn: "\uD83D\uDCCB \u041A\u043E\u043F\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u0445\u0435\u0448 \u0434\u043B\u044F MakerWorld",
+    copied: "\u2705 \u0421\u043A\u043E\u043F\u0438\u0440\u043E\u0432\u0430\u043D\u043E!",
+    footer: "100% \u043D\u0430 \u0441\u0442\u043E\u0440\u043E\u043D\u0435 \u043A\u043B\u0438\u0435\u043D\u0442\u0430 \u2014 \u0414\u0430\u043D\u043D\u044B\u0435 \u043D\u0438\u043A\u0443\u0434\u0430 \u043D\u0435 \u043E\u0442\u043F\u0440\u0430\u0432\u043B\u044F\u044E\u0442\u0441\u044F",
+    micDenied: "\u0414\u043E\u0441\u0442\u0443\u043F \u043A \u043C\u0438\u043A\u0440\u043E\u0444\u043E\u043D\u0443 \u0437\u0430\u043F\u0440\u0435\u0449\u0451\u043D. \u0420\u0430\u0437\u0440\u0435\u0448\u0438\u0442\u0435 \u0432 \u043D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0430\u0445 \u0431\u0440\u0430\u0443\u0437\u0435\u0440\u0430.",
+    micErr: "\u041D\u0435 \u0443\u0434\u0430\u043B\u043E\u0441\u044C \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \u0434\u043E\u0441\u0442\u0443\u043F \u043A \u043C\u0438\u043A\u0440\u043E\u0444\u043E\u043D\u0443.",
+    chars: "\u0441\u0438\u043C\u0432\u043E\u043B\u043E\u0432",
+    decodeErr: "\u041E\u0448\u0438\u0431\u043A\u0430 \u0434\u0435\u043A\u043E\u0434\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044F. \u041F\u043E\u043F\u0440\u043E\u0431\u0443\u0439\u0442\u0435 \u0434\u0440\u0443\u0433\u043E\u0439 \u0444\u0430\u0439\u043B."
   },
   es: {
     title: "Generador de Hash de Audio",
-    subtitle: "Convierte sonido en un hash de 100 caracteres para impresion 3D",
-    tabRec: "🎙️ Grabar",
-    tabUp: "📁 Subir",
+    subtitle: "Convierte sonido en un hash de 100 caracteres para impresi\u00F3n 3D",
+    tabRec: "\uD83C\uDF99\uFE0F Grabar",
+    tabUp: "\uD83D\uDCC1 Subir",
     recHint: "Toca para comenzar a grabar",
-    recHintStop: "Toca para detener",
+    recStop: "Toca para detener",
     dropTxt: "Arrastra un archivo de audio o haz clic para buscar",
     dropSub: "MP3, WAV, M4A, WEBM",
     preview: "Vista previa",
     proc: "Generando hash...",
     resLbl: "Cadena hash generada",
-    warn: "⚠️ No intentes resaltar el texto. Usa el boton Copiar para capturar los bloques de silencio invisibles.",
-    copyBtn: "📋 Copiar Hash para MakerWorld",
-    copied: "✅ Copiado!",
-    footer: "100% en el cliente - No se envian datos",
-    micDenied: "Acceso al microfono denegado. Permite los permisos en la configuracion.",
-    micError: "No se pudo acceder al microfono.",
+    warn: "\u26A0\uFE0F No intentes resaltar el texto. Usa el bot\u00F3n Copiar para capturar los bloques de silencio invisibles.",
+    copyBtn: "\uD83D\uDCCB Copiar Hash para MakerWorld",
+    copied: "\u2705 \u00A1Copiado!",
+    footer: "100% en el cliente \u2014 No se env\u00EDan datos",
+    micDenied: "Acceso al micr\u00F3fono denegado. Permite en la configuraci\u00F3n.",
+    micErr: "No se pudo acceder al micr\u00F3fono.",
     chars: "caracteres",
-    errDecode: "Error al decodificar. Prueba otro archivo."
+    decodeErr: "Error al decodificar. Prueba otro archivo."
   },
   de: {
     title: "Audio-Hash-Generator",
-    subtitle: "Wandle Ton in einen 100-Zeichen-Hash fuer 3D-Druck um",
-    tabRec: "🎙️ Aufnehmen",
-    tabUp: "📁 Hochladen",
+    subtitle: "Wandle Ton in einen 100-Zeichen-Hash f\u00FCr 3D-Druck um",
+    tabRec: "\uD83C\uDF99\uFE0F Aufnehmen",
+    tabUp: "\uD83D\uDCC1 Hochladen",
     recHint: "Tippen zum Aufnehmen",
-    recHintStop: "Tippen zum Stoppen",
+    recStop: "Tippen zum Stoppen",
     dropTxt: "Audiodatei hierher ziehen oder klicken",
     dropSub: "MP3, WAV, M4A, WEBM",
     preview: "Vorschau",
     proc: "Hash wird generiert...",
     resLbl: "Generierter Hash-String",
-    warn: "⚠️ Versuchen Sie nicht, den Text zu markieren. Verwenden Sie die Kopieren-Taste, um die unsichtbaren Stille-Bloecke zu erfassen!",
-    copyBtn: "📋 Hash fuer MakerWorld kopieren",
-    copied: "✅ Kopiert!",
-    footer: "100% clientseitig - Es werden keine Daten gesendet",
+    warn: "\u26A0\uFE0F Versuchen Sie nicht den Text zu markieren. Verwenden Sie die Kopieren-Taste um die unsichtbaren Stille-Bl\u00F6cke zu erfassen!",
+    copyBtn: "\uD83D\uDCCB Hash f\u00FCr MakerWorld kopieren",
+    copied: "\u2705 Kopiert!",
+    footer: "100% clientseitig \u2014 Es werden keine Daten gesendet",
     micDenied: "Mikrofonzugriff verweigert. Erlauben Sie es in den Browsereinstellungen.",
-    micError: "Zugriff auf das Mikrofon nicht moeglich.",
+    micErr: "Zugriff auf das Mikrofon nicht m\u00F6glich.",
     chars: "Zeichen",
-    errDecode: "Fehler beim Decodieren. Versuchen Sie eine andere Datei."
+    decodeErr: "Fehler beim Decodieren. Versuchen Sie eine andere Datei."
+  },
+  fr: {
+    title: "G\u00E9n\u00E9rateur de Hash Audio",
+    subtitle: "Convertissez le son en un hash de 100 caract\u00E8res pour l\u2019impression 3D",
+    tabRec: "\uD83C\uDF99\uFE0F Enregistrer",
+    tabUp: "\uD83D\uDCC1 Importer",
+    recHint: "Appuyez pour enregistrer",
+    recStop: "Appuyez pour arr\u00EAter",
+    dropTxt: "D\u00E9posez un fichier audio ici ou cliquez pour parcourir",
+    dropSub: "MP3, WAV, M4A, WEBM",
+    preview: "Aper\u00E7u",
+    proc: "G\u00E9n\u00E9ration du hash...",
+    resLbl: "Cha\u00EEne de hash g\u00E9n\u00E9r\u00E9e",
+    warn: "\u26A0\uFE0F N\u2019essayez pas de s\u00E9lectionner le texte. Utilisez le bouton Copier ci-dessous pour capturer les blocs de silence invisibles !",
+    copyBtn: "\uD83D\uDCCB Copier le hash pour MakerWorld",
+    copied: "\u2705 Copi\u00E9 !",
+    footer: "100% c\u00F4t\u00E9 client \u2014 Aucune donn\u00E9e n\u2019est envoy\u00E9e",
+    micDenied: "Acc\u00E8s au microphone refus\u00E9. Autorisez-le dans les param\u00E8tres.",
+    micErr: "Impossible d\u2019acc\u00E9der au microphone.",
+    chars: "caract\u00E8res",
+    decodeErr: "Erreur de d\u00E9codage. Essayez un autre fichier."
+  },
+  it: {
+    title: "Generatore di Hash Audio",
+    subtitle: "Converti il suono in un hash di 100 caratteri per la stampa 3D",
+    tabRec: "\uD83C\uDF99\uFE0F Registra",
+    tabUp: "\uD83D\uDCC1 Carica",
+    recHint: "Tocca per registrare",
+    recStop: "Tocca per fermare",
+    dropTxt: "Trascina un file audio qui o clicca per sfogliare",
+    dropSub: "MP3, WAV, M4A, WEBM",
+    preview: "Anteprima",
+    proc: "Generazione hash...",
+    resLbl: "Stringa hash generata",
+    warn: "\u26A0\uFE0F Non provare a evidenziare il testo. Usa il pulsante Copia per catturare i blocchi di silenzio invisibili!",
+    copyBtn: "\uD83D\uDCCB Copia Hash per MakerWorld",
+    copied: "\u2705 Copiato!",
+    footer: "100% lato client \u2014 Nessun dato viene inviato",
+    micDenied: "Accesso al microfono negato. Consentilo nelle impostazioni.",
+    micErr: "Impossibile accedere al microfono.",
+    chars: "caratteri",
+    decodeErr: "Errore di decodifica. Prova un altro file."
+  },
+  pt: {
+    title: "Gerador de Hash de \u00C1udio",
+    subtitle: "Converta som em um hash de 100 caracteres para impress\u00E3o 3D",
+    tabRec: "\uD83C\uDF99\uFE0F Gravar",
+    tabUp: "\uD83D\uDCC1 Enviar",
+    recHint: "Toque para gravar",
+    recStop: "Toque para parar",
+    dropTxt: "Arraste um arquivo de \u00E1udio ou clique para procurar",
+    dropSub: "MP3, WAV, M4A, WEBM",
+    preview: "Pr\u00E9-visualiza\u00E7\u00E3o",
+    proc: "Gerando hash...",
+    resLbl: "String hash gerada",
+    warn: "\u26A0\uFE0F N\u00E3o tente selecionar o texto. Use o bot\u00E3o Copiar para capturar os blocos de sil\u00EAncio invis\u00EDveis!",
+    copyBtn: "\uD83D\uDCCB Copiar Hash para MakerWorld",
+    copied: "\u2705 Copiado!",
+    footer: "100% no cliente \u2014 Nenhum dado \u00E9 enviado",
+    micDenied: "Acesso ao microfone negado. Permita nas configura\u00E7\u00F5es.",
+    micErr: "N\u00E3o foi poss\u00EDvel acessar o microfone.",
+    chars: "caracteres",
+    decodeErr: "Erro ao decodificar. Tente outro arquivo."
+  },
+  zh: {
+    title: "\u97F3\u9891\u54C8\u5E0C\u751F\u6210\u5668",
+    subtitle: "\u5C06\u58F0\u97F3\u8F6C\u6362\u4E3A100\u5B57\u7B26\u54C8\u5E0C\u7528\u4E8E3D\u6253\u5370",
+    tabRec: "\uD83C\uDF99\uFE0F \u5F55\u97F3",
+    tabUp: "\uD83D\uDCC1 \u4E0A\u4F20",
+    recHint: "\u70B9\u51FB\u5F00\u59CB\u5F55\u97F3",
+    recStop: "\u70B9\u51FB\u505C\u6B62\u5F55\u97F3",
+    dropTxt: "\u62D6\u653E\u97F3\u9891\u6587\u4EF6\u6216\u70B9\u51FB\u6D4F\u89C8",
+    dropSub: "MP3, WAV, M4A, WEBM",
+    preview: "\u9884\u89C8",
+    proc: "\u6B63\u5728\u751F\u6210\u54C8\u5E0C...",
+    resLbl: "\u751F\u6210\u7684\u54C8\u5E0C\u5B57\u7B26\u4E32",
+    warn: "\u26A0\uFE0F \u8BF7\u52FF\u5C1D\u8BD5\u9009\u4E2D\u6587\u672C\u3002\u8BF7\u4F7F\u7528\u4E0B\u65B9\u7684\u590D\u5236\u6309\u94AE\u4EE5\u786E\u4FDD\u6355\u83B7\u4E0D\u53EF\u89C1\u7684\u9759\u97F3\u5757\uFF01",
+    copyBtn: "\uD83D\uDCCB \u590D\u5236\u54C8\u5E0C\u5230 MakerWorld",
+    copied: "\u2705 \u5DF2\u590D\u5236\uFF01",
+    footer: "100% \u5BA2\u6237\u7AEF\u8FD0\u884C \u2014 \u4E0D\u4F1A\u53D1\u9001\u4EFB\u4F55\u6570\u636E",
+    micDenied: "\u9EA6\u514B\u98CE\u8BBF\u95EE\u88AB\u62D2\u7EDD\u3002\u8BF7\u5728\u6D4F\u89C8\u5668\u8BBE\u7F6E\u4E2D\u5141\u8BB8\u3002",
+    micErr: "\u65E0\u6CD5\u8BBF\u95EE\u9EA6\u514B\u98CE\u3002",
+    chars: "\u5B57\u7B26",
+    decodeErr: "\u89E3\u7801\u9519\u8BEF\u3002\u8BF7\u5C1D\u8BD5\u5176\u4ED6\u6587\u4EF6\u3002"
+  },
+  ja: {
+    title: "\u30AA\u30FC\u30C7\u30A3\u30AA\u30CF\u30C3\u30B7\u30E5\u30B8\u30A7\u30CD\u30EC\u30FC\u30BF\u30FC",
+    subtitle: "\u97F3\u3092100\u6587\u5B57\u306E\u30CF\u30C3\u30B7\u30E5\u306B\u5909\u63DB\u30013D\u5370\u5237\u306B\u4F7F\u7528",
+    tabRec: "\uD83C\uDF99\uFE0F \u9332\u97F3",
+    tabUp: "\uD83D\uDCC1 \u30A2\u30C3\u30D7\u30ED\u30FC\u30C9",
+    recHint: "\u30BF\u30C3\u30D7\u3057\u3066\u9332\u97F3\u958B\u59CB",
+    recStop: "\u30BF\u30C3\u30D7\u3057\u3066\u505C\u6B62",
+    dropTxt: "\u30AA\u30FC\u30C7\u30A3\u30AA\u30D5\u30A1\u30A4\u30EB\u3092\u30C9\u30ED\u30C3\u30D7\u307E\u305F\u306F\u30AF\u30EA\u30C3\u30AF\u3057\u3066\u53C2\u7167",
+    dropSub: "MP3, WAV, M4A, WEBM",
+    preview: "\u30D7\u30EC\u30D3\u30E5\u30FC",
+    proc: "\u30CF\u30C3\u30B7\u30E5\u3092\u751F\u6210\u4E2D...",
+    resLbl: "\u751F\u6210\u3055\u308C\u305F\u30CF\u30C3\u30B7\u30E5\u6587\u5B57\u5217",
+    warn: "\u26A0\uFE0F \u30C6\u30AD\u30B9\u30C8\u3092\u9078\u629E\u3057\u306A\u3044\u3067\u304F\u3060\u3055\u3044\u3002\u4E0B\u306E\u30B3\u30D4\u30FC\u30DC\u30BF\u30F3\u3092\u4F7F\u7528\u3057\u3066\u898B\u3048\u306A\u3044\u7121\u97F3\u30D6\u30ED\u30C3\u30AF\u3092\u30AD\u30E3\u30D7\u30C1\u30E3\u3057\u3066\u304F\u3060\u3055\u3044\uFF01",
+    copyBtn: "\uD83D\uDCCB MakerWorld\u7528\u30CF\u30C3\u30B7\u30E5\u3092\u30B3\u30D4\u30FC",
+    copied: "\u2705 \u30B3\u30D4\u30FC\u3057\u307E\u3057\u305F\uFF01",
+    footer: "100% \u30AF\u30E9\u30A4\u30A2\u30F3\u30C8\u5074 \u2014 \u30C7\u30FC\u30BF\u306F\u9001\u4FE1\u3055\u308C\u307E\u305B\u3093",
+    micDenied: "\u30DE\u30A4\u30AF\u3078\u306E\u30A2\u30AF\u30BB\u30B9\u304C\u62D2\u5426\u3055\u308C\u307E\u3057\u305F\u3002\u30D6\u30E9\u30A6\u30B6\u8A2D\u5B9A\u3067\u8A31\u53EF\u3057\u3066\u304F\u3060\u3055\u3044\u3002",
+    micErr: "\u30DE\u30A4\u30AF\u306B\u30A2\u30AF\u30BB\u30B9\u3067\u304D\u307E\u305B\u3093\u3002",
+    chars: "\u6587\u5B57",
+    decodeErr: "\u30C7\u30B3\u30FC\u30C9\u30A8\u30E9\u30FC\u3002\u5225\u306E\u30D5\u30A1\u30A4\u30EB\u3092\u304A\u8A66\u3057\u304F\u3060\u3055\u3044\u3002"
+  },
+  ko: {
+    title: "\uC624\uB514\uC624 \uD574\uC2DC \uC0DD\uC131\uAE30",
+    subtitle: "\uC18C\uB9AC\uB97C 100\uC790 \uD574\uC2DC\uB85C \uBCC0\uD658\uD558\uC5EC 3D \uD504\uB9B0\uD305\uC5D0 \uC0AC\uC6A9",
+    tabRec: "\uD83C\uDF99\uFE0F \uB179\uC74C",
+    tabUp: "\uD83D\uDCC1 \uC5C5\uB85C\uB4DC",
+    recHint: "\uD0ED\uD558\uC5EC \uB179\uC74C \uC2DC\uC791",
+    recStop: "\uD0ED\uD558\uC5EC \uC815\uC9C0",
+    dropTxt: "\uC624\uB514\uC624 \uD30C\uC77C\uC744 \uB4DC\uB798\uADF8\uD558\uAC70\uB098 \uD074\uB9AD\uD558\uC5EC \uCC3E\uC544\uBCF4\uAE30",
+    dropSub: "MP3, WAV, M4A, WEBM",
+    preview: "\uBBF8\uB9AC\uBCF4\uAE30",
+    proc: "\uD574\uC2DC \uC0DD\uC131 \uC911...",
+    resLbl: "\uC0DD\uC131\uB41C \uD574\uC2DC \uBB38\uC790\uC5F4",
+    warn: "\u26A0\uFE0F \uD14D\uC2A4\uD2B8\uB97C \uC120\uD0DD\uD558\uC9C0 \uB9C8\uC138\uC694. \uBCF4\uC774\uC9C0 \uC54A\uB294 \uBB34\uC74C \uBE14\uB85D\uC744 \uCEA1\uCC98\uD558\uB824\uBA74 \uC544\uB798 \uBCF5\uC0AC \uBC84\uD2BC\uC744 \uC0AC\uC6A9\uD558\uC138\uC694!",
+    copyBtn: "\uD83D\uDCCB MakerWorld\uC6A9 \uD574\uC2DC \uBCF5\uC0AC",
+    copied: "\u2705 \uBCF5\uC0AC\uB428!",
+    footer: "100% \uD074\uB77C\uC774\uC5B8\uD2B8 \uCE21 \u2014 \uB370\uC774\uD130\uAC00 \uC804\uC1A1\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4",
+    micDenied: "\uB9C8\uC774\uD06C \uC561\uC138\uC2A4\uAC00 \uAC70\uBD80\uB418\uC5C8\uC2B5\uB2C8\uB2E4. \uBE0C\uB77C\uC6B0\uC800 \uC124\uC815\uC5D0\uC11C \uD5C8\uC6A9\uD558\uC138\uC694.",
+    micErr: "\uB9C8\uC774\uD06C\uC5D0 \uC561\uC138\uC2A4\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.",
+    chars: "\uBB38\uC790",
+    decodeErr: "\uB514\uCF54\uB529 \uC624\uB958. \uB2E4\uB978 \uD30C\uC77C\uC744 \uC2DC\uB3C4\uD558\uC138\uC694."
+  },
+  tr: {
+    title: "Ses Hash \u00DCretici",
+    subtitle: "Sesi 3D bask\u0131 i\u00E7in 100 karakterlik hash\u2019e d\u00F6n\u00FC\u015Ft\u00FCr\u00FCn",
+    tabRec: "\uD83C\uDF99\uFE0F Kay\u0131t",
+    tabUp: "\uD83D\uDCC1 Y\u00FCkle",
+    recHint: "Kay\u0131t i\u00E7in dokunun",
+    recStop: "Durdurmak i\u00E7in dokunun",
+    dropTxt: "Ses dosyas\u0131n\u0131 s\u00FCr\u00FCkleyin veya t\u0131klay\u0131n",
+    dropSub: "MP3, WAV, M4A, WEBM",
+    preview: "\u00D6nizleme",
+    proc: "Hash olu\u015Fturuluyor...",
+    resLbl: "Olu\u015Fturulan Hash Dizisi",
+    warn: "\u26A0\uFE0F Metni se\u00E7meye \u00E7al\u0131\u015Fmay\u0131n. G\u00F6r\u00FCnmez sessizlik bloklar\u0131n\u0131 yakalamak i\u00E7in a\u015Fa\u011F\u0131daki Kopyala d\u00FC\u011Fmesini kullan\u0131n!",
+    copyBtn: "\uD83D\uDCCB MakerWorld i\u00E7in Hash\u2019i Kopyala",
+    copied: "\u2705 Kopyaland\u0131!",
+    footer: "100% istemci tarafl\u0131 \u2014 Hi\u00E7bir veri g\u00F6nderilmez",
+    micDenied: "Mikrofon eri\u015Fimi reddedildi. Taray\u0131c\u0131 ayarlar\u0131ndan izin verin.",
+    micErr: "Mikrofona eri\u015Filemiyor.",
+    chars: "karakter",
+    decodeErr: "\u00C7\u00F6zme hatas\u0131. Ba\u015Fka bir dosya deneyin."
   }
 };
 
 var curLang = "en";
+var recording = false;
+var mediaRec = null;
+var recChunks = [];
+var recStream = null;
+var recAudioCtx = null;
+var recAnalyser = null;
+var vizAnimId = null;
+var timerInterval = null;
+var timerSec = 0;
+var prevURL = null;
+var copyTimer = null;
+var BAR_N = 36;
 
-function T(key) {
-  return LANG[curLang][key] || LANG.en[key] || key;
+/* ===== SAFE HELPERS ===== */
+function $(id) { return document.getElementById(id); }
+
+function t(key) {
+  var lang = TR[curLang];
+  if (lang && lang[key]) return lang[key];
+  return TR.en[key] || key;
+}
+
+function pad2(n) {
+  return (n < 10 ? "0" : "") + n;
+}
+
+/* ===== LANGUAGE ===== */
+function changeLang(lang) {
+  curLang = lang;
+  applyLang();
 }
 
 function applyLang() {
-  document.getElementById("t_title").textContent = T("title");
-  document.getElementById("t_subtitle").textContent = T("subtitle");
-  document.getElementById("t_tabRec").textContent = T("tabRec");
-  document.getElementById("t_tabUp").textContent = T("tabUp");
-  document.getElementById("t_recHint").textContent = isRecording ? T("recHintStop") : T("recHint");
-  document.getElementById("t_dropTxt").textContent = T("dropTxt");
-  document.getElementById("t_dropSub").textContent = T("dropSub");
-  document.getElementById("t_preview").textContent = T("preview");
-  document.getElementById("t_proc").textContent = T("proc");
-  document.getElementById("t_resLbl").textContent = T("resLbl");
-  document.getElementById("t_warn").textContent = T("warn");
-  document.getElementById("t_copyBtn").textContent = T("copyBtn");
-  document.getElementById("t_footer").textContent = T("footer");
+  $("elTitle").textContent = t("title");
+  $("elSubtitle").textContent = t("subtitle");
+  $("elTabRec").textContent = t("tabRec");
+  $("elTabUp").textContent = t("tabUp");
+  $("elRecHint").textContent = recording ? t("recStop") : t("recHint");
+  $("elDropTxt").textContent = t("dropTxt");
+  $("elDropSub").textContent = t("dropSub");
+  $("elPreview").textContent = t("preview");
+  $("elProc").textContent = t("proc");
+  $("elResLbl").textContent = t("resLbl");
+  $("elWarn").textContent = t("warn");
+  $("elFooter").textContent = t("footer");
 
-  var h = document.getElementById("hashOut").textContent;
-  if (h && h.length > 0) {
-    document.getElementById("hashLen").textContent = h.length + " " + T("chars");
+  /* Copy button — only update if not in "copied" state */
+  if (!copyTimer) {
+    $("elCopyBtn").textContent = t("copyBtn");
+  }
+
+  /* Hash length */
+  var hText = $("hashOut").textContent;
+  if (hText && hText.length > 0) {
+    $("hashLen").textContent = hText.length + " " + t("chars");
   }
 }
 
-document.getElementById("langSel").addEventListener("change", function(e) {
-  curLang = e.target.value;
-  applyLang();
-});
-
-/* ═══════════════════════════════════════ */
-/*  TAB SWITCHING                         */
-/* ═══════════════════════════════════════ */
-function switchTab(tab) {
-  var tabRec = document.getElementById("tabRec");
-  var tabUp = document.getElementById("tabUp");
-  var panelRec = document.getElementById("panelRecord");
-  var panelUp = document.getElementById("panelUpload");
-
-  if (tab === "record") {
-    tabRec.classList.add("active");
-    tabUp.classList.remove("active");
-    panelRec.classList.add("active");
-    panelUp.classList.remove("active");
+/* ===== TAB SWITCHING ===== */
+function switchTab(which) {
+  if (which === "record") {
+    $("btnTabRec").className = "tab-btn active";
+    $("btnTabUp").className = "tab-btn";
+    $("panelRecord").className = "panel active";
+    $("panelUpload").className = "panel";
   } else {
-    tabUp.classList.add("active");
-    tabRec.classList.remove("active");
-    panelUp.classList.add("active");
-    panelRec.classList.remove("active");
+    $("btnTabUp").className = "tab-btn active";
+    $("btnTabRec").className = "tab-btn";
+    $("panelUpload").className = "panel active";
+    $("panelRecord").className = "panel";
   }
 }
 
-/* ═══════════════════════════════════════ */
-/*  VISUALIZER SETUP                      */
-/* ═══════════════════════════════════════ */
-var vizEl = document.getElementById("viz");
-var BAR_COUNT = 36;
-for (var i = 0; i < BAR_COUNT; i++) {
-  var bar = document.createElement("div");
-  bar.className = "viz-bar";
-  bar.style.height = "2px";
-  vizEl.appendChild(bar);
-}
+/* ===== VISUALIZER BARS ===== */
+(function initBars() {
+  var viz = $("viz");
+  for (var i = 0; i < BAR_N; i++) {
+    var b = document.createElement("div");
+    b.className = "viz-bar";
+    b.style.height = "2px";
+    viz.appendChild(b);
+  }
+})();
 
-/* ═══════════════════════════════════════ */
-/*  RECORDING                             */
-/* ═══════════════════════════════════════ */
-var mediaRecorder = null;
-var chunks = [];
-var isRecording = false;
-var timerInt = null;
-var secs = 0;
-var recStream = null;
-var recCtx = null;
-var recAnalyser = null;
-var animId = null;
-var currentURL = null;
-
+/* ===== RECORDING ===== */
 function toggleRecord() {
-  if (!isRecording) {
+  if (!recording) {
     startRec();
   } else {
     stopRec();
@@ -687,208 +650,242 @@ function toggleRecord() {
 }
 
 function startRec() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    alert(t("micErr"));
+    return;
+  }
+
   navigator.mediaDevices.getUserMedia({ audio: true }).then(function(stream) {
     recStream = stream;
-    isRecording = true;
-    chunks = [];
+    recording = true;
+    recChunks = [];
 
-    document.getElementById("recBtn").classList.add("on");
-    document.getElementById("recWrap").classList.add("on");
-    document.getElementById("timerEl").classList.add("on");
-    vizEl.classList.add("on");
-    document.getElementById("t_recHint").textContent = T("recHintStop");
+    $("recBtn").className = "rec-btn on";
+    $("recWrap").className = "rec-wrap on";
+    $("timerEl").className = "timer on";
+    $("viz").className = "viz on";
+    $("elRecHint").textContent = t("recStop");
 
-    // Timer
-    secs = 0;
-    document.getElementById("timerEl").textContent = "00:00";
-    timerInt = setInterval(function() {
-      secs++;
-      var m = String(Math.floor(secs / 60)).padStart(2, "0");
-      var s = String(secs % 60).padStart(2, "0");
-      document.getElementById("timerEl").textContent = m + ":" + s;
+    /* Timer */
+    timerSec = 0;
+    $("timerEl").textContent = "00:00";
+    timerInterval = setInterval(function() {
+      timerSec++;
+      $("timerEl").textContent = pad2(Math.floor(timerSec / 60)) + ":" + pad2(timerSec % 60);
     }, 1000);
 
-    // Visualizer
-    recCtx = new (window.AudioContext || window.webkitAudioContext)();
-    var src = recCtx.createMediaStreamSource(stream);
-    recAnalyser = recCtx.createAnalyser();
-    recAnalyser.fftSize = 128;
-    src.connect(recAnalyser);
-    drawViz();
+    /* Visualizer */
+    try {
+      recAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      var src = recAudioCtx.createMediaStreamSource(stream);
+      recAnalyser = recAudioCtx.createAnalyser();
+      recAnalyser.fftSize = 128;
+      src.connect(recAnalyser);
+      drawViz();
+    } catch(e) {
+      /* visualizer is optional — ignore errors */
+    }
 
-    // MediaRecorder
-    var mimeTypes = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg;codecs=opus", ""];
-    var mime = "";
-    for (var i = 0; i < mimeTypes.length; i++) {
-      if (mimeTypes[i] === "" || MediaRecorder.isTypeSupported(mimeTypes[i])) {
-        mime = mimeTypes[i];
+    /* MediaRecorder */
+    var mimeList = [
+      "audio/webm;codecs=opus",
+      "audio/webm",
+      "audio/ogg;codecs=opus",
+      "audio/mp4",
+      ""
+    ];
+    var chosenMime = "";
+    for (var i = 0; i < mimeList.length; i++) {
+      if (mimeList[i] === "" || MediaRecorder.isTypeSupported(mimeList[i])) {
+        chosenMime = mimeList[i];
         break;
       }
     }
 
-    var opts = mime ? { mimeType: mime } : {};
-    mediaRecorder = new MediaRecorder(stream, opts);
+    var opts = chosenMime ? { mimeType: chosenMime } : {};
+    mediaRec = new MediaRecorder(stream, opts);
 
-    mediaRecorder.ondataavailable = function(e) {
-      if (e.data && e.data.size > 0) {
-        chunks.push(e.data);
+    mediaRec.ondataavailable = function(ev) {
+      if (ev.data && ev.data.size > 0) {
+        recChunks.push(ev.data);
       }
     };
 
-    mediaRecorder.onstop = function() {
-      var usedMime = mediaRecorder.mimeType || mime || "audio/webm";
-      var blob = new Blob(chunks, { type: usedMime });
-      processAudio(blob);
+    mediaRec.onstop = function() {
+      var finalMime = "audio/webm";
+      try { finalMime = mediaRec.mimeType || chosenMime || "audio/webm"; } catch(e) {}
+      var blob = new Blob(recChunks, { type: finalMime });
+      handleBlob(blob);
     };
 
-    mediaRecorder.start();
+    mediaRec.start();
 
-  }).catch(function(err) {
-    if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
-      alert(T("micDenied"));
+  }, function(err) {
+    if (err && (err.name === "NotAllowedError" || err.name === "PermissionDeniedError")) {
+      alert(t("micDenied"));
     } else {
-      alert(T("micError"));
+      alert(t("micErr"));
     }
   });
 }
 
 function stopRec() {
-  if (!isRecording) return;
-  isRecording = false;
+  if (!recording) return;
+  recording = false;
 
-  if (mediaRecorder && mediaRecorder.state !== "inactive") {
-    mediaRecorder.stop();
-  }
+  /* Stop MediaRecorder */
+  try {
+    if (mediaRec && mediaRec.state !== "inactive") {
+      mediaRec.stop();
+    }
+  } catch(e) {}
+
+  /* Stop stream tracks */
   if (recStream) {
-    recStream.getTracks().forEach(function(t) { t.stop(); });
+    try {
+      var tracks = recStream.getTracks();
+      for (var i = 0; i < tracks.length; i++) {
+        tracks[i].stop();
+      }
+    } catch(e) {}
     recStream = null;
   }
 
-  document.getElementById("recBtn").classList.remove("on");
-  document.getElementById("recWrap").classList.remove("on");
-  document.getElementById("timerEl").classList.remove("on");
-  vizEl.classList.remove("on");
-  document.getElementById("t_recHint").textContent = T("recHint");
+  /* UI reset */
+  $("recBtn").className = "rec-btn";
+  $("recWrap").className = "rec-wrap";
+  $("timerEl").className = "timer";
+  $("viz").className = "viz";
+  $("elRecHint").textContent = t("recHint");
 
-  clearInterval(timerInt);
-  if (animId) {
-    cancelAnimationFrame(animId);
-    animId = null;
+  /* Clear timer */
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
   }
 
-  // Reset bars
-  var bars = vizEl.querySelectorAll(".viz-bar");
+  /* Stop viz animation */
+  if (vizAnimId) {
+    cancelAnimationFrame(vizAnimId);
+    vizAnimId = null;
+  }
+
+  /* Reset bars */
+  var bars = $("viz").querySelectorAll(".viz-bar");
   for (var i = 0; i < bars.length; i++) {
     bars[i].style.height = "2px";
   }
 
-  if (recCtx) {
-    try { recCtx.close(); } catch(e) {}
-    recCtx = null;
+  /* Close audio context */
+  if (recAudioCtx) {
+    try { recAudioCtx.close(); } catch(e) {}
+    recAudioCtx = null;
     recAnalyser = null;
   }
 }
 
 function drawViz() {
-  if (!recAnalyser || !isRecording) return;
+  if (!recAnalyser || !recording) return;
   var data = new Uint8Array(recAnalyser.frequencyBinCount);
   recAnalyser.getByteFrequencyData(data);
-  var bars = vizEl.querySelectorAll(".viz-bar");
-  var step = Math.max(1, Math.floor(data.length / BAR_COUNT));
-  for (var i = 0; i < BAR_COUNT; i++) {
+  var bars = $("viz").querySelectorAll(".viz-bar");
+  var step = Math.floor(data.length / BAR_N);
+  if (step < 1) step = 1;
+  for (var i = 0; i < BAR_N; i++) {
     var val = data[i * step] || 0;
     var h = Math.max(2, (val / 255) * 44);
     if (i < bars.length) bars[i].style.height = h + "px";
   }
-  animId = requestAnimationFrame(drawViz);
+  vizAnimId = requestAnimationFrame(drawViz);
 }
 
-/* ═══════════════════════════════════════ */
-/*  FILE UPLOAD                           */
-/* ═══════════════════════════════════════ */
-var dropzone = document.getElementById("dropzone");
-var fileIn = document.getElementById("fileIn");
+/* ===== FILE UPLOAD ===== */
+(function initUpload() {
+  var dz = $("dropzone");
+  var fi = $("fileIn");
 
-dropzone.addEventListener("dragover", function(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  dropzone.classList.add("over");
-});
+  dz.addEventListener("dragover", function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    dz.classList.add("over");
+  });
+  dz.addEventListener("dragleave", function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    dz.classList.remove("over");
+  });
+  dz.addEventListener("drop", function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    dz.classList.remove("over");
+    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleBlob(e.dataTransfer.files[0]);
+    }
+  });
+  fi.addEventListener("change", function() {
+    if (fi.files && fi.files.length > 0) {
+      handleBlob(fi.files[0]);
+    }
+    fi.value = "";
+  });
+})();
 
-dropzone.addEventListener("dragleave", function(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  dropzone.classList.remove("over");
-});
-
-dropzone.addEventListener("drop", function(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  dropzone.classList.remove("over");
-  if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-    processAudio(e.dataTransfer.files[0]);
+/* ===== PROCESS BLOB ===== */
+function handleBlob(blob) {
+  /* Show player */
+  if (prevURL) {
+    try { URL.revokeObjectURL(prevURL); } catch(e) {}
   }
-});
+  prevURL = URL.createObjectURL(blob);
+  var pl = $("player");
+  pl.src = prevURL;
+  pl.load();
+  $("playerBox").className = "player-box show";
 
-fileIn.addEventListener("change", function() {
-  if (fileIn.files && fileIn.files.length > 0) {
-    processAudio(fileIn.files[0]);
-  }
-  fileIn.value = "";
-});
+  /* Show spinner */
+  $("resultBox").className = "result";
+  $("proc").className = "proc show";
 
-/* ═══════════════════════════════════════ */
-/*  PROCESS AUDIO BLOB/FILE               */
-/* ═══════════════════════════════════════ */
-function processAudio(blob) {
-  // Show player
-  if (currentURL) {
-    URL.revokeObjectURL(currentURL);
-  }
-  currentURL = URL.createObjectURL(blob);
-  var player = document.getElementById("player");
-  player.src = currentURL;
-  player.load();
-  document.getElementById("playerBox").classList.add("show");
-
-  // Show processing
-  document.getElementById("resultBox").classList.remove("show");
-  document.getElementById("proc").classList.add("show");
-
-  // Read as ArrayBuffer
+  /* Read as ArrayBuffer */
   var reader = new FileReader();
   reader.onload = function() {
-    var arrayBuf = reader.result;
-    var ctx = new (window.AudioContext || window.webkitAudioContext)();
-    ctx.decodeAudioData(arrayBuf, function(audioBuffer) {
-      try { ctx.close(); } catch(e) {}
-      var hash = generateHash(audioBuffer);
-      showResult(hash);
-    }, function(err) {
-      try { ctx.close(); } catch(e) {}
-      console.error("Decode error:", err);
-      document.getElementById("hashOut").textContent = T("errDecode");
-      document.getElementById("hashLen").textContent = "";
-      document.getElementById("resultBox").classList.add("show");
-      document.getElementById("proc").classList.remove("show");
-    });
+    var buf = reader.result;
+    var ctx = null;
+    try {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+    } catch(e) {
+      $("proc").className = "proc";
+      alert(t("decodeErr"));
+      return;
+    }
+
+    ctx.decodeAudioData(buf,
+      function(audioBuffer) {
+        try { ctx.close(); } catch(e) {}
+        var hash = genHash(audioBuffer);
+        showResult(hash);
+      },
+      function(err) {
+        try { ctx.close(); } catch(e) {}
+        $("proc").className = "proc";
+        alert(t("decodeErr"));
+      }
+    );
   };
   reader.onerror = function() {
-    console.error("FileReader error");
-    document.getElementById("proc").classList.remove("show");
+    $("proc").className = "proc";
+    alert(t("decodeErr"));
   };
   reader.readAsArrayBuffer(blob);
 }
 
-/* ═══════════════════════════════════════ */
-/*  HASH ALGORITHM (STRICT)               */
-/* ═══════════════════════════════════════ */
-function generateHash(audioBuffer) {
+/* ===== HASH ALGORITHM (STRICT) ===== */
+function genHash(audioBuffer) {
   var rawData = audioBuffer.getChannelData(0);
   var blockSize = Math.floor(rawData.length / 100);
   var averages = [];
 
-  // Step 1: 100 chunk averages of absolute values
+  /* Step 1: chunk averages of absolute values */
   for (var i = 0; i < 100; i++) {
     var sum = 0;
     var start = i * blockSize;
@@ -898,20 +895,20 @@ function generateHash(audioBuffer) {
     averages.push(sum / blockSize);
   }
 
-  // Step 2: Find max
+  /* Step 2: find max */
   var maxAvg = 0;
   for (var i = 0; i < 100; i++) {
     if (averages[i] > maxAvg) maxAvg = averages[i];
   }
 
-  // Step 3: Normalize, boost, map to ASCII
+  /* Step 3: normalize, boost, map to ASCII */
   var result = "";
   for (var i = 0; i < 100; i++) {
     var normalizedVol = maxAvg > 0 ? (averages[i] / maxAvg) : 0;
     var boostedVol = Math.min(normalizedVol * 1.5, 1.0);
     var charCode = Math.floor((boostedVol * 90) + 32);
 
-    // Escape fix: skip " (34), ' (39), \ (92)
+    /* Escape fix: skip " (34), ' (39), \ (92) */
     if (charCode === 34 || charCode === 39 || charCode === 92) {
       charCode++;
     }
@@ -922,35 +919,28 @@ function generateHash(audioBuffer) {
   return result;
 }
 
-/* ═══════════════════════════════════════ */
-/*  SHOW RESULT                           */
-/* ═══════════════════════════════════════ */
+/* ===== SHOW RESULT ===== */
 function showResult(hash) {
-  document.getElementById("hashOut").textContent = hash;
-  document.getElementById("hashLen").textContent = hash.length + " " + T("chars");
-  document.getElementById("proc").classList.remove("show");
-  document.getElementById("resultBox").classList.add("show");
+  $("hashOut").textContent = hash;
+  $("hashLen").textContent = hash.length + " " + t("chars");
+  $("proc").className = "proc";
+  $("resultBox").className = "result show";
 }
 
-/* ═══════════════════════════════════════ */
-/*  COPY TO CLIPBOARD                     */
-/* ═══════════════════════════════════════ */
-var copyTimeout = null;
-
+/* ===== COPY ===== */
 function copyHash() {
-  var text = document.getElementById("hashOut").textContent;
+  var text = $("hashOut").textContent;
   if (!text || text.length === 0) return;
 
-  var btn = document.getElementById("copyBtn");
-  var span = document.getElementById("t_copyBtn");
+  var btn = $("copyBtn");
+  var span = $("elCopyBtn");
 
-  // Try modern clipboard API first
+  /* Try modern API */
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(function() {
-      showCopied(btn, span);
-    }, function() {
-      fallbackCopy(text, btn, span);
-    });
+    navigator.clipboard.writeText(text).then(
+      function() { showCopied(btn, span); },
+      function() { fallbackCopy(text, btn, span); }
+    );
   } else {
     fallbackCopy(text, btn, span);
   }
@@ -965,27 +955,23 @@ function fallbackCopy(text, btn, span) {
   document.body.appendChild(ta);
   ta.focus();
   ta.select();
-  try {
-    document.execCommand("copy");
-    showCopied(btn, span);
-  } catch(e) {
-    // silent fail
-  }
+  try { document.execCommand("copy"); } catch(e) {}
   document.body.removeChild(ta);
+  showCopied(btn, span);
 }
 
 function showCopied(btn, span) {
   btn.classList.add("ok");
-  span.textContent = T("copied");
-
-  if (copyTimeout) clearTimeout(copyTimeout);
-  copyTimeout = setTimeout(function() {
+  span.textContent = t("copied");
+  if (copyTimer) clearTimeout(copyTimer);
+  copyTimer = setTimeout(function() {
     btn.classList.remove("ok");
-    span.textContent = T("copyBtn");
+    span.textContent = t("copyBtn");
+    copyTimer = null;
   }, 2000);
 }
 
-/* Init */
+/* ===== INIT ===== */
 applyLang();
 </script>
 </body>
